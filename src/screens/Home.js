@@ -23,7 +23,7 @@ const Home = () => {
     //REDUX
     const myState = useSelector((state) => state.changeState);
     const dispatch = useDispatch();
-    console.log("myState in home", myState.currnt_city);
+    console.log("myState in home", myState.currnt_city_id);
 
     // const headline = [{
     //     text: "Super long piece of text is long. The quick brown fox jumps over the lazy dog."

@@ -25,40 +25,60 @@ import { cityapi } from './tempdata/TempData';
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
 import { CURRENT_CITY } from "./redux/Action";
+//API URL
+import { APIurls } from './constant/constant';
+import axios from 'axios';
+
 
 //RENDER FUN
 const Root = () => {
     const [active, setactive] = useState("Home")
     const [ShowMenu, setShowMenu] = useState(false)
     // const [selectedLocationValue, setSelectedLocationValue] = useState("java");
+    const [allCity, setAllCity] = useState([]);
     const [selectedCity, setSelectedCity] = useState();
 
     //redux
     const myState = useSelector((state) => state.changeState)
     const dispatch = useDispatch()
-    // const countries = ["Egypt", "Canada", "Australia", "Ireland"]
-    const [countries, setCountries] = useState(["city lisy empty!", "list"])
+    const cityUrl = APIurls.cityURL
+    const getCity=async()=>{
+       
+       const res = await axios.get(cityUrl)
+       const cityData = res.data.cities;
+       
+       setAllCity(cityData)
+    }
+
+    useEffect(()=>{
+        getCity()
+    },[])
+    
     console.log("selectedCity", selectedCity)
-    const [selectedLanguage, setSelectedLanguage] = useState(); 
+    
 
     const selectCity = () => {
-        const cityapi = [
-            { "id": 1, "name": "babai", "created_at": null, "updated_at": "2021-12-17T12:52:31.000000Z" },
-            { "id": 2, "name": "Sehore", "created_at": null, "updated_at": null },
-            { "id": 4, "name": "bhopal", "created_at": "2021-12-18T09:32:57.000000Z", "updated_at": "2021-12-18T09:32:57.000000Z" }
-        ]
+        // const cityapi = [
+        //     { "id": 1, "name": "babai", "created_at": null, "updated_at": "2021-12-17T12:52:31.000000Z" },
+        //     { "id": 2, "name": "Sehore", "created_at": null, "updated_at": null },
+        //     { "id": 4, "name": "bhopal", "created_at": "2021-12-18T09:32:57.000000Z", "updated_at": "2021-12-18T09:32:57.000000Z" }
+        // ]
         return (
             <View  style={{ height: 50, width: 150,justifyContent:"center"}}>
                 <Picker
                     style={{ height: 50, width: 150, color: '#fff', }}
-                    selectedValue={selectedLanguage}
-                    onValueChange={(itemValue, itemIndex) =>
-                        setSelectedLanguage(itemValue)
+                    selectedValue={selectedCity}
+                    onValueChange={(itemValue, itemIndex) =>{
+                        setSelectedCity(itemValue)
+                        dispatch({type:CURRENT_CITY,payload:itemValue})
+                        console.log("itemValue",itemValue)
+                        console.log("itemIndex",itemIndex)
+                    } 
                     }>
                     {
-                        cityapi.map(i => {
+                        allCity.map(i => {
                             let { name, id } = i;
-                            console.log(i)
+                            
                             return (<Picker.Item label={name} value={id} />)
                         })
                     }

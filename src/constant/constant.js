@@ -3,3 +3,6 @@ export const COLOR = {
     primaryDark:"#870404",
     
 }
+export const APIurls ={
+    cityURL :"http://renews18.com/api/city_list"
+}
