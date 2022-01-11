@@ -10,12 +10,15 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-picker/picker": "^2.2.1",
     "@reduxjs/toolkit": "^1.7.1",
     "axios": "^0.24.0",
     "react": "17.0.2",
     "react-native": "0.66.4",
     "react-native-image-slider-box": "^1.1.14",
+    "react-native-safe-area-context": "^3.3.2",
     "react-native-select-dropdown": "^1.7.0",
+    "react-native-svg": "^12.1.1",
     "react-native-text-ticker": "^1.14.0",
     "react-native-vector-icons": "^9.0.0",
     "react-redux": "^7.2.6",

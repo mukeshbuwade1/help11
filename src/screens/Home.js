@@ -1,6 +1,6 @@
-import React from 'react'
-import {LogBox, ScrollView, ActivityIndicator, SafeAreaView, StyleSheet, Text, View, Image, Button, Dimensions, FlatList, TouchableOpacity, StatusBar } from 'react-native';
-
+import React, {useState} from 'react'
+import { LogBox, ScrollView, ActivityIndicator, SafeAreaView, StyleSheet, Text, View, Image, Button, Dimensions, FlatList, TouchableOpacity, StatusBar } from 'react-native';
+// import {cityapi} from "../tempdata/TempData" ;
 import { SliderBox } from 'react-native-image-slider-box';
 import TextTicker from 'react-native-text-ticker';
 import { COLOR } from '../constant/constant';
@@ -10,9 +10,12 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { CURRENT_CITY } from "../redux/Action";
 
+
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const Home = () => {
+
     const [IsLoader, setIsLoader] = React.useState(true);
     const [allServiceList, setAllServiceList] = React.useState([]);
     const [allHeadlineText, setAllHeadlineText] = React.useState("")
@@ -31,6 +34,8 @@ const Home = () => {
     // headline.map((val)=>{
     //     setAllHeadlineText({})
     // })
+
+
 
 
     const serviceList = async (api) => {
@@ -99,6 +104,7 @@ const Home = () => {
         { title: 'plumber', icon: 'agriculture' },
     ];
 
+   
     const renderItem = ({ item }) => {
         return (
             <TouchableOpacity
@@ -119,6 +125,7 @@ const Home = () => {
             </TouchableOpacity>
         );
     };
+    //render
     return (
 
         <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.primary }} >
@@ -156,7 +163,7 @@ const Home = () => {
                                     {/* {headline.map((val) => <Text>{val.text} </Text>)} */}
                                 </TextTicker>
                             </View>
-                                   
+                            
                             {/* ....categoryType.....*/}
                             <View
                                 style={{

@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View, Image, Animated } from 'react-native';
-import SelectDropdown from 'react-native-select-dropdown'
+// import SelectDropdown from 'react-native-select-dropdown'
+import { Picker } from '@react-native-picker/picker';
 // Constant....
 import { COLOR } from './constant/constant';
-// icons..........
 // images....
 import home from "./image/home.png";
 import film from "./image/film.png";
@@ -11,44 +11,60 @@ import information from "./image/information-button.png";
 import news from "./image/news.png";
 import close from "./image/close.png";
 import menu from "./image/menu.png";
+import location from "./image/location.png";
 
 //header.........
 import Header from './component/Header';
-
 //screens......
 import Home from './screens/Home';
 import News from './screens/News';
 import Video from './screens/Video';
 import About from './screens/About';
-//RNPickerSelect
+//component
+import { cityapi } from './tempdata/TempData';
+//REDUX
+import { useDispatch, useSelector } from "react-redux";
+import { CURRENT_CITY } from "./redux/Action";
 
+//RENDER FUN
 const Root = () => {
     const [active, setactive] = useState("Home")
     const [ShowMenu, setShowMenu] = useState(false)
     // const [selectedLocationValue, setSelectedLocationValue] = useState("java");
     const [selectedCity, setSelectedCity] = useState();
-    const countries = ["Egypt", "Canada", "Australia", "Ireland"]
+
+    //redux
+    const myState = useSelector((state) => state.changeState)
+    const dispatch = useDispatch()
+    // const countries = ["Egypt", "Canada", "Australia", "Ireland"]
+    const [countries, setCountries] = useState(["city lisy empty!", "list"])
     console.log("selectedCity", selectedCity)
-    const selectCity =()=>{
-        return(
-            <SelectDropdown
-            buttonStyle={{justifyContent:"flex-end" , backgroundColor:"transparent", width:130,margin:0,padding:0  }}
-            buttonTextStyle={{color:"#fff"}}
-                        data={countries}
-                        onSelect={(selectedItem, index) => {
-                            setSelectedCity(selectedItem)
-                        }}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                            // text represented after item is selected
-                            // if data array is an array of objects then return selectedItem.property to render after item is selected
-                            return selectedItem
-                        }}
-                        rowTextForSelection={(item, index) => {
-                            // text represented for each item in dropdown
-                            // if data array is an array of objects then return item.property to represent item in dropdown
-                            return item
-                        }}
-                    />
+    const [selectedLanguage, setSelectedLanguage] = useState(); 
+
+    const selectCity = () => {
+        const cityapi = [
+            { "id": 1, "name": "babai", "created_at": null, "updated_at": "2021-12-17T12:52:31.000000Z" },
+            { "id": 2, "name": "Sehore", "created_at": null, "updated_at": null },
+            { "id": 4, "name": "bhopal", "created_at": "2021-12-18T09:32:57.000000Z", "updated_at": "2021-12-18T09:32:57.000000Z" }
+        ]
+        return (
+            <View  style={{ height: 50, width: 150,justifyContent:"center"}}>
+                <Picker
+                    style={{ height: 50, width: 150, color: '#fff', }}
+                    selectedValue={selectedLanguage}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setSelectedLanguage(itemValue)
+                    }>
+                    {
+                        cityapi.map(i => {
+                            let { name, id } = i;
+                            console.log(i)
+                            return (<Picker.Item label={name} value={id} />)
+                        })
+                    }
+                </Picker>
+                <Image  style={{ position: "absolute", right: 10, zIndex: -1,width:24, height:24 }} source={location} />
+            </View>
         )
     }
 
@@ -104,6 +120,7 @@ const Root = () => {
         )
 
     }
+    //RENDER
     return (
         <View style={{ flex: 1, }}>
             <View style={{ flex: 1, backgroundColor: COLOR.primaryDark, paddingTop: 80, paddingHorizontal: 20, alignItems: "flex-start", justifyContent: "flex-start" }} >
@@ -120,7 +137,7 @@ const Root = () => {
                 position: "absolute",
                 backgroundColor: COLOR.primary,
                 top: 0, left: 0, right: 0, bottom: 0,
-                paddingTop: active == "Home"?7:20,
+                paddingTop: active == "Home" ? 7 : 20,
                 borderRadius: ShowMenu ? 15 : 0,
                 //Animated view 
                 transform: [
@@ -129,15 +146,16 @@ const Root = () => {
                 ]
             }}
             >
-                <View style={{flexDirection:"row", justifyContent:"space-between",alignItems:"center", paddingHorizontal: 15,}}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 15, }}>
                     <TouchableOpacity
                         style={{
-                            flexDirection: "row"
+                            flexDirection: "row",
+                            alignItems:"center"
                         }}
                         onPress={() => {
                             viewAnimation()
                         }}>
-                        <Image source={ShowMenu ? close : menu} style={{ width: 25, height: 25, tintColor: "#fff" }} />
+                        <Image source={ShowMenu ? close : menu} style={{ width: 20, height: 20, tintColor: "#fff" }} />
                         <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: "600", color: "#fff" }}>{active}</Text>
                     </TouchableOpacity>
                     {
