@@ -1,14 +1,15 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { LogBox, ScrollView, ActivityIndicator, SafeAreaView, StyleSheet, Text, View, Image, Button, Dimensions, FlatList, TouchableOpacity, StatusBar } from 'react-native';
 // import {cityapi} from "../tempdata/TempData" ;
 import { SliderBox } from 'react-native-image-slider-box';
 import TextTicker from 'react-native-text-ticker';
-import { COLOR } from '../constant/constant';
+import { COLOR, APIurls } from '../constant/constant';
 
 import axios from "axios";
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
 import { CURRENT_CITY } from "../redux/Action";
+
 
 
 
@@ -38,17 +39,13 @@ const Home = () => {
 
 
 
-    const serviceList = async (api) => {
-        const url = api[1].request.url
-        const res = await axios.get(url)
-        const allServices = res.data.services;
-        setAllServiceList(allServices)
-    }
+   
+    const serviceUrl = APIurls.serviceURL
     const mycategoty = async () => {
-        const res = await axios.get("https://www.getpostman.com/collections/5685ec58059ef4609039");
-        const api = res.data.item
-        serviceList(api)
-
+        const res = await axios.get(serviceUrl)
+        const serviceData = res.data.services;
+        console.warn(serviceData)
+        setAllServiceList(serviceData)
     }
     const getText = async () => {
         console.log("text")
@@ -72,6 +69,7 @@ const Home = () => {
         console.log("length : ", totleLenght)
         setTimer(totleLenght * 100)
     }
+
     React.useEffect(() => {
         mycategoty();
         getText()
@@ -104,7 +102,7 @@ const Home = () => {
         { title: 'plumber', icon: 'agriculture' },
     ];
 
-   
+
     const renderItem = ({ item }) => {
         return (
             <TouchableOpacity
@@ -120,7 +118,8 @@ const Home = () => {
                 }}
 
             >
-                <Image source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Home-icon.svg/1200px-Home-icon.svg.png" }} style={{ width: 40, height: 40 }} />
+                {/* <Image source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Home-icon.svg/1200px-Home-icon.svg.png" }} style={{ width: 40, height: 40 }} /> */}
+                <Image source={{ uri: item.file }} style={{ width: 40, height: 40 }} />
                 <Text style={{ textAlign: 'center', color: "#000" }}> {item.title} </Text>
             </TouchableOpacity>
         );
@@ -163,7 +162,7 @@ const Home = () => {
                                     {/* {headline.map((val) => <Text>{val.text} </Text>)} */}
                                 </TextTicker>
                             </View>
-                            
+
                             {/* ....categoryType.....*/}
                             <View
                                 style={{
@@ -173,7 +172,7 @@ const Home = () => {
                                 }}>
                                 <FlatList
                                     removeClippedSubviews
-                                    data={categoryType}
+                                    data={allServiceList}
                                     renderItem={renderItem}
                                     keyExtractor={(item, id) => id}
                                     numColumns={3}
