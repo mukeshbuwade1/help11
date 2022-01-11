@@ -7,8 +7,8 @@ import { COLOR } from '../constant/constant';
 
 import axios from "axios";
 //REDUX
-// import { useDispatch, useSelector } from "react-redux";
-// import { CURRNT_CITY } from "../redux/Action";
+import { useDispatch, useSelector } from "react-redux";
+import { CURRENT_CITY } from "../redux/Action";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -17,9 +17,10 @@ const Home = () => {
     const [allServiceList, setAllServiceList] = React.useState([]);
     const [allHeadlineText, setAllHeadlineText] = React.useState("")
     const [timer, setTimer] = React.useState(3000)
-    // const myState = useSelector((state) => state.changeState);
-    // const dispatch = useDispatch();
-    // console.log("myState in home", myState.currnt_city);
+    //REDUX
+    const myState = useSelector((state) => state.changeState);
+    const dispatch = useDispatch();
+    console.log("myState in home", myState.currnt_city);
 
     // const headline = [{
     //     text: "Super long piece of text is long. The quick brown fox jumps over the lazy dog."
@@ -120,7 +121,7 @@ const Home = () => {
     };
     return (
 
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.primery }} >
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.primary }} >
             <StatusBar backgroundColor={COLOR.primaryDark} barStyle={"light-content"} />
             {
                 IsLoader ? (<ActivityIndicator size="large" color="#fff" />) : (
@@ -155,7 +156,7 @@ const Home = () => {
                                     {/* {headline.map((val) => <Text>{val.text} </Text>)} */}
                                 </TextTicker>
                             </View>
-
+                                   
                             {/* ....categoryType.....*/}
                             <View
                                 style={{
