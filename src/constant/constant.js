@@ -5,5 +5,6 @@ export const COLOR = {
 }
 export const APIurls ={
     cityURL :"http://renews18.com/api/city_list",
-    serviceURL: "http://renews18.com/api/service_list"
+    serviceURL: "http://renews18.com/api/service_list",
+     employeeURL: "http://renews18.com/api/employee_list?"
 }

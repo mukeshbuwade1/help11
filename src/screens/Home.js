@@ -24,7 +24,7 @@ const Home = () => {
     //REDUX
     const myState = useSelector((state) => state.changeState);
     const dispatch = useDispatch();
-    console.log("myState in home", myState.currnt_city_id);
+    
 
     // const headline = [{
     //     text: "Super long piece of text is long. The quick brown fox jumps over the lazy dog."
@@ -101,11 +101,22 @@ const Home = () => {
         { title: 'plumber', icon: 'agriculture' },
         { title: 'plumber', icon: 'agriculture' },
     ];
+    
+const getEmployee=(id)=>{
+    console.log("APIurls",APIurls.employeeURL)
+    console.log("id",id)
+    console.log("city id", myState.currnt_city_id);
+    const createEmpoyeeLink = `${APIurls.employeeURL}city_id=${myState.currnt_city_id}&service_id=${id}`
+    console.log("createEmpoyeeLink",createEmpoyeeLink)
+    // http://renews18.com/api/employee_list?city_id=1&service_id=1
 
+}
 
     const renderItem = ({ item }) => {
+        const {id, file, title} = item;
         return (
             <TouchableOpacity
+            onPress={()=>getEmployee(id)}
                 style={{
                     backgroundColor: '#cfaca9',
                     margin: 5,
@@ -116,11 +127,11 @@ const Home = () => {
                     padding: 10,
 
                 }}
-
             >
+                {console.log("item",item.id)}
                 {/* <Image source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Home-icon.svg/1200px-Home-icon.svg.png" }} style={{ width: 40, height: 40 }} /> */}
-                <Image source={{ uri: item.file }} style={{ width: 40, height: 40 }} />
-                <Text style={{ textAlign: 'center', color: "#000" }}> {item.title} </Text>
+                <Image source={{ uri: file }} style={{ width: 40, height: 40 }} />
+                <Text style={{ textAlign: 'center', color: "#000" }}> {title} </Text>
             </TouchableOpacity>
         );
     };
