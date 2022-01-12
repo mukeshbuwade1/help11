@@ -24,14 +24,14 @@ import About from './screens/About';
 import { cityapi } from './tempdata/TempData';
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { CURRENT_CITY } from "./redux/Action";
+import { CURRENT_CITY,CITY_ARRAY } from "./redux/Action";
 //API URL
 import { APIurls } from './constant/constant';
 import axios from 'axios';
 
 
 //RENDER FUN
-const Root = () => {
+const Root = ({ navigation }) => {
     const [active, setactive] = useState("Home")
     const [ShowMenu, setShowMenu] = useState(false)
     // const [selectedLocationValue, setSelectedLocationValue] = useState("java");
@@ -43,13 +43,11 @@ const Root = () => {
     const dispatch = useDispatch()
     const cityUrl = APIurls.cityURL
     const getCity=async()=>{
-       
        const res = await axios.get(cityUrl)
        const cityData = res.data.cities;
-       
        setAllCity(cityData)
+       dispatch({type:CITY_ARRAY,payload:cityData})
     }
-
     useEffect(()=>{
         getCity()
     },[])
@@ -71,8 +69,6 @@ const Root = () => {
                     onValueChange={(itemValue, itemIndex) =>{
                         setSelectedCity(itemValue)
                         dispatch({type:CURRENT_CITY,payload:itemValue})
-                        console.log("itemValue",itemValue)
-                        console.log("itemIndex",itemIndex)
                     } 
                     }>
                     {
@@ -109,10 +105,10 @@ const Root = () => {
         setShowMenu(!ShowMenu)
     }
 
-    const selectScreen = (active) => {
+    const selectScreen = (active,navigation) => {
         switch (active) {
             case "Home":
-                return <Home />;
+                return <Home navigation={navigation} />;
             case "News":
                 return <News />
             case "Video":
@@ -120,7 +116,7 @@ const Root = () => {
             case "AboutUs":
                 return <About />
             default:
-                return <Home />
+                return <Home navigation={navigation} />
 
         }
     }
@@ -183,7 +179,7 @@ const Root = () => {
                     }
                 </View>
 
-                {selectScreen(active)}
+                {selectScreen(active,navigation )}
             </Animated.View>
         </View>
     )

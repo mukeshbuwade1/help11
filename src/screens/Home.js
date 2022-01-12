@@ -8,14 +8,14 @@ import { COLOR, APIurls } from '../constant/constant';
 import axios from "axios";
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { CURRENT_CITY } from "../redux/Action";
+import { CURRENT_CITY, SET_SERVICE_ID } from "../redux/Action";
 
 
 
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const Home = () => {
+const Home = ({ navigation }) => {
 
     const [IsLoader, setIsLoader] = React.useState(true);
     const [allServiceList, setAllServiceList] = React.useState([]);
@@ -24,7 +24,8 @@ const Home = () => {
     //REDUX
     const myState = useSelector((state) => state.changeState);
     const dispatch = useDispatch();
-    
+    console.log("myState",myState)
+
 
     // const headline = [{
     //     text: "Super long piece of text is long. The quick brown fox jumps over the lazy dog."
@@ -39,7 +40,7 @@ const Home = () => {
 
 
 
-   
+
     const serviceUrl = APIurls.serviceURL
     const mycategoty = async () => {
         const res = await axios.get(serviceUrl)
@@ -101,22 +102,33 @@ const Home = () => {
         { title: 'plumber', icon: 'agriculture' },
         { title: 'plumber', icon: 'agriculture' },
     ];
-    
-const getEmployee=(id)=>{
-    console.log("APIurls",APIurls.employeeURL)
-    console.log("id",id)
-    console.log("city id", myState.currnt_city_id);
-    const createEmpoyeeLink = `${APIurls.employeeURL}city_id=${myState.currnt_city_id}&service_id=${id}`
-    console.log("createEmpoyeeLink",createEmpoyeeLink)
-    // http://renews18.com/api/employee_list?city_id=1&service_id=1
 
-}
+    const getEmployee = async (id) => {
+        // console.log("APIurls",APIurls.employeeURL);
+        // console.log("id",id);
+        // console.log("city id", myState.currnt_city_id);
+        // http://renews18.com/api/employee_list?city_id=1&service_id=1;
 
-    const renderItem = ({ item }) => {
-        const {id, file, title} = item;
+        // const createEmpoyeeLink = `${APIurls.employeeURL}city_id=${myState.currnt_city_id}&service_id=${id}`;
+        // console.log("createEmpoyeeLink",createEmpoyeeLink);
+        // const res = await axios.get(createEmpoyeeLink);
+        // console.log(res.data.employees)
+        // console.warn("navigation",navigation)
+        await dispatch({ type: SET_SERVICE_ID, payload: id, })
+        if(myState.currnt_city_id.length != 0){
+            
+        navigation.navigate('EmployeeDetails')
+        }else{
+            alert("select city again")
+        }
+    }
+
+    const renderItem = ({ item, navigation }) => {
+        const { id, file, title } = item;
+
         return (
             <TouchableOpacity
-            onPress={()=>getEmployee(id)}
+                onPress={() => getEmployee(id, navigation)}
                 style={{
                     backgroundColor: '#cfaca9',
                     margin: 5,
@@ -128,7 +140,7 @@ const getEmployee=(id)=>{
 
                 }}
             >
-                {console.log("item",item.id)}
+                {console.log("item", item.id)}
                 {/* <Image source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Home-icon.svg/1200px-Home-icon.svg.png" }} style={{ width: 40, height: 40 }} /> */}
                 <Image source={{ uri: file }} style={{ width: 40, height: 40 }} />
                 <Text style={{ textAlign: 'center', color: "#000" }}> {title} </Text>
