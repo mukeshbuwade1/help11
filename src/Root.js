@@ -30,17 +30,20 @@ import { APIurls } from './constant/constant';
 import axios from 'axios';
 
 
-//RENDER FUN
+//RENDER FUNCTION
 const Root = ({ navigation }) => {
-    const [active, setactive] = useState("Home")
-    const [ShowMenu, setShowMenu] = useState(false)
-    // const [selectedLocationValue, setSelectedLocationValue] = useState("java");
-    const [allCity, setAllCity] = useState([]);
-    const [selectedCity, setSelectedCity] = useState();
-
     //redux
     const myState = useSelector((state) => state.changeState)
     const dispatch = useDispatch()
+    const initialSelectedCity = myState.currnt_city_id;
+    console.log("initialSelectedCity",initialSelectedCity)
+
+    const [active, setactive] = useState("Home")
+    const [ShowMenu, setShowMenu] = useState(false)
+    const [allCity, setAllCity] = useState([]);
+    const [selectedCity, setSelectedCity] = useState(initialSelectedCity);
+
+    
     const cityUrl = APIurls.cityURL
     const getCity=async()=>{
        const res = await axios.get(cityUrl)
