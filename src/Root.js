@@ -28,6 +28,7 @@ import { CURRENT_CITY,CITY_ARRAY } from "./redux/Action";
 //API URL
 import { APIurls } from './constant/constant';
 import axios from 'axios';
+//netInfo
 
 
 //RENDER FUNCTION

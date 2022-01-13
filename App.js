@@ -26,20 +26,15 @@ const StackScreens = () => {
   )
 }
 const InitialStack = () => {
-  //REDUX
-  // const myState = useSelector((state) => state.changeState);
-  // const dispatch = useDispatch();
-  // console.warn(myState)
-  // console.log(typeof(myState.currnt_city_id))
-
-  const [isCitySelected,setIsCitySelected] = useState(false)
+  
+  const [isCitySelected,setIsCitySelected] = useState(true)
 
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem('@storage_Key')
       if (value !== null) {
         console.warn("city found", value)
-        setIsCitySelected(true)
+        setIsCitySelected(false)
         // value previously stored
       }
     } catch (e) {
@@ -54,7 +49,7 @@ const InitialStack = () => {
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
       initialRouteName={isCitySelected==false?"InitialScreen" : "StackScreens"}>
-        {console.log("isCitySelected",isCitySelected)}
+        {console.log("isCitySelected true or false",isCitySelected)}
       <Stack.Screen name="StackScreens" component={StackScreens} />
       <Stack.Screen name="InitialScreen" component={InitialScreen} />
     </Stack.Navigator>
