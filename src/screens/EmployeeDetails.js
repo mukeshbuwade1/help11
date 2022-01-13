@@ -22,9 +22,10 @@ const EmployeeDetails = () => {
     console.log("myState in EmployeeDetails", myState)
     const { employeeURL } = APIurls;
     const createEmpoyeeLink = `${employeeURL}city_id=${currnt_city_id}&service_id=${currnt_service_id}`;
-    console.log("createEmpoyeeLink", createEmpoyeeLink);
+    console.log("---------url---------", createEmpoyeeLink);
 
     const getSevice = async () => {
+        console.log("--------- url-------",createEmpoyeeLink)
         const res = await axios.get(createEmpoyeeLink)
         const employeeData = res.data.employees
         setCurrentEmployee(employeeData)

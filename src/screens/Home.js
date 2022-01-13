@@ -43,9 +43,10 @@ const Home = ({ navigation }) => {
 
     const serviceUrl = APIurls.serviceURL
     const mycategoty = async () => {
+        console.log("--------- url-------",serviceUrl)
         const res = await axios.get(serviceUrl)
         const serviceData = res.data.services;
-        console.warn(serviceData)
+        // console.warn(serviceData)
         setAllServiceList(serviceData)
     }
     const getText = async () => {
@@ -56,6 +57,7 @@ const Home = ({ navigation }) => {
         }
         const api = res.data.item
         const url = api[5].request.url
+        console.log("--------- url-------",url)
         const URLres = await axios.get(url)
         const textList = URLres.data.headline;
         console.log("lenght", textList.length)
@@ -114,7 +116,7 @@ const Home = ({ navigation }) => {
         // const res = await axios.get(createEmpoyeeLink);
         // console.log(res.data.employees)
         // console.warn("navigation",navigation)
-        await dispatch({ type: SET_SERVICE_ID, payload: id, })
+        await dispatch(SET_SERVICE_ID(id))
         if(myState.currnt_city_id.length != 0){
             
         navigation.navigate('EmployeeDetails')
