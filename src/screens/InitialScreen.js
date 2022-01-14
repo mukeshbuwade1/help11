@@ -1,57 +1,70 @@
 import React, { useEffect, useState } from 'react'
-import { FlatList, StyleSheet, Alert, Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StatusBar, StyleSheet, Alert, Dimensions, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native';
 import { COLOR, APIurls } from '../constant/constant';
 import axios from "axios";
+import Loader from '../component/Loader';
+import undraw from "../image/undraw.png";
+import NetInfo from '@react-native-community/netinfo';
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { CURRENT_CITY, CITY_ARRAY } from "../redux/Action";
+import { CURRENT_CITY, CITY_ARRAY, IS_INTERNET_ACTIVE } from "../redux/Action";
 //AsyncStorage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const windowWidth = Dimensions.get('window').width;
 
 const InitialScreen = ({ navigation }) => {
-
+    const [isInternetConected,setIsInternetConected] = useState(false)
     //REDUX
     const myState = useSelector((state) => state.changeState);
     const dispatch = useDispatch();
-    const isInternetActive = myState.is_internet
-    console.error("isInternetActive",isInternetActive)
-
-
+    // Internet connection listener
+    React.useEffect(() => {
+        const unsubscribe = NetInfo.addEventListener(state => {
+            console.log('Connection type', state.type);
+            console.log('Is connected?', state.isConnected);
+            setIsInternetConected(state.isConnected)
+            dispatch(IS_INTERNET_ACTIVE(state.isConnected));
+        });
+        return unsubscribe;
+    }, []);
     const [allCity, setAllCity] = useState([]);
     const [selectedCity, setSelectedCity] = useState();
+    const [isLoading, setIsLoading] = useState(true)
 
     const cityUrl = APIurls.cityURL
     const getCity = async () => {
-        console.log("--------- url-------", cityUrl)
+        console.log("---------city url-------", cityUrl)
         const res = await axios.get(cityUrl)
+        // console.warn("---------city res-------", res)
+        if (res) {
+            setIsLoading(false)
+        }
         const cityData = res.data.cities;
         setAllCity(cityData)
         dispatch(CITY_ARRAY(cityData))
     }
     useEffect(() => {
+        // dispatch(IS_INTERNET_ACTIVE(value))
         getCity()
     }, []);
     //AsyncStorage function.............
-    const storeData = async (value) => {
-        console.log("data value =", value)
-        // const val= toString(value)
+    const storeData = async (Value) => {
+        //console.log("data Value =", Value)
+        // const val= toString(Value)
         // console.log("data val =", val)
         try {
-            await AsyncStorage.setItem('@storage_Key', "" + value)
-            console.log("data saved in AsyncStorage", value)
+            await AsyncStorage.setItem('@storage_Key', "" + Value)
+            console.log("data saved in AsyncStorage", Value)
         } catch (e) {
             console.log("error when set AsyncStorage with ERROR : ", e)
         }
     }
-
-
-    const cityIsSelected = (value) => {
-        console.log(`fromasync ${value}`)
+    const cityIsSelected = (Value) => {
+        //console.log(`fromasync ${Value}`)
         // console.log(`for + async  && ${navigation}`)
-        dispatch(CURRENT_CITY(value))
-        console.warn("dispatch({ type: CURRENT_CITY, payload: value })", myState)
+        //dispatch(CURRENT_CITY(Value))
+        console.log("dispatch({ type: CURRENT_CITY, payload: Value })", myState)
         //navigation.navigate('StackScreens')
     }
 
@@ -59,7 +72,7 @@ const InitialScreen = ({ navigation }) => {
         try {
             const value = await AsyncStorage.getItem('@storage_Key')
             if (value !== null) {
-                console.warn("city found", value)
+                console.log("city found", value)
                 console.log(`fromasync ${value} && ${navigation}`)
                 cityIsSelected(value)
                 // setIsCitySelected("StackScreens")
@@ -73,61 +86,47 @@ const InitialScreen = ({ navigation }) => {
     useEffect(() => {
         getData()
     }, [])
-
-    const renderItem = ({ item }) => {
-        return (
-            <TouchableOpacity
-                onPress={() => {
-
-                }}>
-                <Text
-                    style={{
-                        fontSize: 16,
-                        fontWeight: "500",
-                        color: "#fff",
-                        textTransform: "capitalize",
-                        marginVertical: 3
-                    }}>{item.name}</Text>
-            </TouchableOpacity>
-        )
-    }
     //render
+    // const isLoading = true;
+    if (isLoading) return <Loader />;
     return (
         <View
             style={{
                 flex: 1,
                 backgroundColor: COLOR.primary,
-                justifyContent: "center",
+                padding: 20,
                 alignItems: "center"
             }}>
-                {!isInternetActive ? Alert.alert("Internet Error", "Please connect to your internet") : console.log("internet connected")}
-            <View style={{ width: windowWidth * 0.6, }}>
+            <StatusBar backgroundColor={COLOR.primaryDark} barStyle={"light-content"} />
+            {/* {isInternetActive === false ? Alert.alert("Internet Error", "Please connect to Network") : console.log("internet connected")} */}
+            <Image source={undraw} style={{ width: 300, height: 211 }} />
+            <View style={{ width: windowWidth * 0.8, }}>
                 <Text
                     style={{
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: "700",
                         marginLeft: 5,
                         color: "#fff"
-                    }}
-                >
+                    }}>
                     Select City
                 </Text>
                 <View
                     style={{
                         width: "100%",
-                        backgroundColor: COLOR.primaryDark,
-                        padding: 10,
+                        backgroundColor: isInternetConected ? COLOR.primaryDark : "transparent",
+                        paddingVertical: 10,
+                        paddingHorizontal: 5,
                         borderRadius: 10,
                         marginTop: 5
                     }}>
+                    {/* map mathod */}
                     {
                         allCity.map((item, i) => {
-
                             return (
                                 <TouchableOpacity
                                     style={{
                                         backgroundColor: selectedCity == item.id ? COLOR.primary : "transparent",
-                                        paddingHorizontal: 15,
+                                        paddingLeft: 25,
                                         paddingVertical: 10,
                                         borderRadius: 5
                                     }}
@@ -135,8 +134,7 @@ const InitialScreen = ({ navigation }) => {
                                     onPress={() => {
 
                                         setSelectedCity(item.id)
-                                    }}
-                                >
+                                    }}>
                                     <Text
                                         style={{
                                             fontSize: 16,
@@ -149,40 +147,36 @@ const InitialScreen = ({ navigation }) => {
                             )
                         })
                     }
-
-                    {/* <FlatList
-                        style={{ height: 200 }}
-                        data={allCity}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item.id}
-                    /> */}
-
                 </View>
             </View>
-            <TouchableOpacity
-                onPress={() => {
-                    // console.log("selectedCity", selectedCity)
-                    if (selectedCity) {
-                        dispatch(CURRENT_CITY(selectedCity))
-                        storeData(selectedCity)
-                        navigation.navigate('StackScreens')
-                    } else {
-                        console.log("please select city first ")
-                    }
-                }}
-                style={{
-                    position: "absolute",
-                    bottom: 20, left: 10, right: 10,
-                    backgroundColor: COLOR.primaryDark,
-                    borderRadius: 5,
-                    paddingVertical: 10,
-                    alignItems: "center"
-                }}
-            >
-                <Text style={{ fontWeight: "700", fontSize: 18, color: "#fff" }}>
-                    NEXT
-                </Text>
-            </TouchableOpacity>
+            {/* next button */}
+            {selectedCity ? (
+                <TouchableOpacity
+                    onPress={() => {
+                        // console.log("selectedCity", selectedCity)
+                        if (selectedCity) {
+                            dispatch(CURRENT_CITY(selectedCity))
+                            storeData(selectedCity)
+                            navigation.navigate('StackScreens')
+                        } else {
+                            console.log("please select city first ")
+                        }
+                    }}
+                    style={{
+                        position: "absolute",
+                        bottom: 20, left: 10, right: 10,
+                        backgroundColor: COLOR.primaryDark,
+                        borderRadius: 5,
+                        paddingVertical: 10,
+                        alignItems: "center"
+                    }}
+                >
+                    <Text style={{ fontWeight: "700", fontSize: 18, color: "#fff" }}>
+                        NEXT
+                    </Text>
+                </TouchableOpacity>
+            ) : <Text></Text>}
+
         </View>
     )
 }

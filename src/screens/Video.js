@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Linking, Dimensions, Image, SafeAreaView, FlatList, ImageBackground } from 'react-native';
 // import { AntDesign } from '@expo/vector-icons';
 // import { Colors } from "../constant/Constant";
@@ -7,11 +7,13 @@ import err from "../image/404.jpg";
 import insta from "../image/insta.jpg";
 import newn from "../image/newn.jpg";
 import iso from "../image/iso.jpg";
+import axios from 'axios';
 // import CommonHeader from '../component/CommonHeader';
 //.............
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { COLOR } from '../constant/constant';
 //.................
+
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -25,29 +27,51 @@ const videodata = [
     { thumbnail: iso, title: "Atractive Neon Text || webdevelopment tricks 2021", link: "https://www.youtube.com/watch?v=89Aroh2pBN0", },
 
 ]
+const Video = ({ navigation }) => {
+    const [isLoading, setIsLoading] = useState(true)
+    const getVideoData = async() => {
+        try {
+            const res = await axios.get("https://www.getpostman.com/collections/5685ec58059ef4609039");
+            const api = res.data.item
+            const url = api[5].request.url
+            if(url){
+                setIsLoading(false)
+            }
+            console.log("--------- url-------", url)
+            
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
-const renderItem = ({ item }) => {
-    const { thumbnail, title, link } = item
-    return (
-        <TouchableOpacity style={{ marginVertical: 20 }} onPress={() => Linking.openURL(link)}>
-            <View style={{ width: windowWidth, height: 7, backgroundColor: COLOR.primaryDark }}>
-            </View>
-            <ImageBackground source={thumbnail} style={{ width: windowWidth, height: 250, justifyContent: "center", alignItems: "center" }}>
-                {/* <AntDesign style={{ backgroundColor: "#000", borderRadius: 100, opacity: 0.7 }} name="play" size={80} color="#fff" /> */}
-                <AntDesign style={{ backgroundColor: "#000", borderRadius: 100, opacity: 0.7,padding:20 }} name="stepforward" size={30} color="#fff" />
-            </ImageBackground>
+    useEffect(() => {
+        getVideoData()
+    }, [])
 
-            <Text style={{ fontSize: 18, fontWeight: "700", marginHorizontal: 10, marginVertical: 5, color: "#fff" }}>{title}</Text>
 
-        </TouchableOpacity>
-    )
-}
+    const renderItem = ({ item }) => {
+        const { thumbnail, title, link } = item
+        return (
+            <TouchableOpacity style={{ marginVertical: 20 }} onPress={() => Linking.openURL(link)}>
+                <View style={{ width: windowWidth, height: 7, backgroundColor: COLOR.primaryDark }}>
+                </View>
+                <ImageBackground source={thumbnail} style={{ width: windowWidth, height: 250, justifyContent: "center", alignItems: "center" }}>
+                    {/* <AntDesign style={{ backgroundColor: "#000", borderRadius: 100, opacity: 0.7 }} name="play" size={80} color="#fff" /> */}
+                    <AntDesign style={{ backgroundColor: "#000", borderRadius: 100, opacity: 0.7, padding: 20 }} name="stepforward" size={30} color="#fff" />
+                </ImageBackground>
 
-const Video = ({navigation}) => {
+                <Text style={{ fontSize: 18, fontWeight: "700", marginHorizontal: 10, marginVertical: 5, color: "#fff" }}>{title}</Text>
+
+            </TouchableOpacity>
+        )
+    }
+    //RENDER
+    // const isLoading = false;
+    if (isLoading) return <Loader />;
     return (
         <SafeAreaView style={{ flex: 1, alignItems: "center", backgroundColor: COLOR.primary }}>
             {/* <CommonHeader navigation={navigation} title={"Videos"}/> */}
-            
+
             <FlatList
                 data={videodata}
                 renderItem={renderItem}

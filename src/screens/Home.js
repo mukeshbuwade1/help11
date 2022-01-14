@@ -4,6 +4,7 @@ import { LogBox, ScrollView, ActivityIndicator, SafeAreaView, StyleSheet, Text, 
 import { SliderBox } from 'react-native-image-slider-box';
 import TextTicker from 'react-native-text-ticker';
 import { COLOR, APIurls } from '../constant/constant';
+import Loader from '../component/Loader';
 
 import axios from "axios";
 //REDUX
@@ -16,15 +17,14 @@ import { CURRENT_CITY, SET_SERVICE_ID } from "../redux/Action";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const Home = ({ navigation }) => {
-
-    const [IsLoader, setIsLoader] = React.useState(true);
     const [allServiceList, setAllServiceList] = React.useState([]);
     const [allHeadlineText, setAllHeadlineText] = React.useState("")
     const [timer, setTimer] = React.useState(3000)
+    const [isLoading, setIsLoading] = useState(true)
     //REDUX
     const myState = useSelector((state) => state.changeState);
     const dispatch = useDispatch();
-    console.log("myState",myState)
+    console.log("myState", myState)
 
 
     // const headline = [{
@@ -43,8 +43,11 @@ const Home = ({ navigation }) => {
 
     const serviceUrl = APIurls.serviceURL
     const mycategoty = async () => {
-        console.log("--------- url-------",serviceUrl)
+        console.log("--------- url-------", serviceUrl)
         const res = await axios.get(serviceUrl)
+        if (res) {
+            setIsLoading(false)
+        }
         const serviceData = res.data.services;
         // console.warn(serviceData)
         setAllServiceList(serviceData)
@@ -52,12 +55,12 @@ const Home = ({ navigation }) => {
     const getText = async () => {
         console.log("text")
         const res = await axios.get("https://www.getpostman.com/collections/5685ec58059ef4609039");
-        if (res) {
-            setIsLoader(false)
-        }
+        // const abcurl = res.data.item[3].request.url
+        // const abcres = await axios.get(abcurl);
+        // console.error("abcres",abcres.data.newspapers)
         const api = res.data.item
         const url = api[5].request.url
-        console.log("--------- url-------",url)
+        console.log("--------- url-------", url)
         const URLres = await axios.get(url)
         const textList = URLres.data.headline;
         console.log("lenght", textList.length)
@@ -117,10 +120,10 @@ const Home = ({ navigation }) => {
         // console.log(res.data.employees)
         // console.warn("navigation",navigation)
         await dispatch(SET_SERVICE_ID(id))
-        if(myState.currnt_city_id.length != 0){
-            
-        navigation.navigate('EmployeeDetails')
-        }else{
+        if (myState.currnt_city_id.length != 0) {
+
+            navigation.navigate('EmployeeDetails')
+        } else {
             alert("select city again")
         }
     }
@@ -149,63 +152,62 @@ const Home = ({ navigation }) => {
             </TouchableOpacity>
         );
     };
-    //render
+
+    //RENDER
+    // const isLoading = false;
+    if (isLoading) return <Loader />;
     return (
 
         <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.primary }} >
             <StatusBar backgroundColor={COLOR.primaryDark} barStyle={"light-content"} />
-            {
-                IsLoader ? (<ActivityIndicator size="large" color="#fff" />) : (
-                    <View>
+            {/*....main view........ */}
+            <ScrollView
+                scrollEnabled={false}
+                style={{ width: windowWidth }}>
+                <View style={{ width: windowWidth }}>
+                    {/*......slider ...... */}
+                    <SliderBox
+                        sliderBoxHeight={200}
+                        dotStyle={{ width: 0 }}
+                        autoplay={true}
+                        circleLoop={true}
+                        images={state.images}
+                    />
+                </View>
+                {/*..marquee..text */}
+                <View style={{ backgroundColor: COLOR.primary, width: windowWidth }}>
+                    <TextTicker
+                        style={{
+                            fontSize: 15,
+                            paddingVertical: 5,
+                            color: "#fff",
+                            paddingLeft: 20
+                        }}
+                        duration={timer}
+                        loop
+                        bounce
+                        repeatSpacer={50}>
+                        {allHeadlineText}
+                        {/* {headline.map((val) => <Text>{val.text} </Text>)} */}
+                    </TextTicker>
+                </View>
 
-                        {/*....main view........ */}
-                        <ScrollView style={{ width: windowWidth }}>
-                            <View style={{ width: windowWidth }}>
-                                {/*......slider ...... */}
-                                <SliderBox
-                                    sliderBoxHeight={200}
-                                    dotStyle={{ width: 0 }}
-                                    autoplay={true}
-                                    circleLoop={true}
-                                    images={state.images}
-                                />
-                            </View>
-                            {/*..marquee..text */}
-                            <View style={{ backgroundColor: COLOR.primary, width: windowWidth }}>
-                                <TextTicker
-                                    style={{
-                                        fontSize: 15,
-                                        paddingVertical: 5,
-                                        color: "#fff",
-                                        paddingLeft: 20
-                                    }}
-                                    duration={timer}
-                                    loop
-                                    bounce
-                                    repeatSpacer={50}>
-                                    {allHeadlineText}
-                                    {/* {headline.map((val) => <Text>{val.text} </Text>)} */}
-                                </TextTicker>
-                            </View>
-
-                            {/* ....categoryType.....*/}
-                            <View
-                                style={{
-                                    width: windowWidth,
-                                    backgroundColor: "#edccca",
-                                    minHeight: 500
-                                }}>
-                                <FlatList
-                                    removeClippedSubviews
-                                    data={allServiceList}
-                                    renderItem={renderItem}
-                                    keyExtractor={(item, id) => id}
-                                    numColumns={3}
-                                />
-                            </View>
-                        </ScrollView>
-                    </View>
-                )}
+                {/* ....categoryType.....*/}
+                <View
+                    style={{
+                        width: windowWidth,
+                        backgroundColor: "#edccca",
+                        minHeight: 500
+                    }}>
+                    <FlatList
+                        removeClippedSubviews
+                        data={allServiceList}
+                        renderItem={renderItem}
+                        keyExtractor={(item, id) => id}
+                        numColumns={3}
+                    />
+                </View>
+            </ScrollView>
         </SafeAreaView>
 
 

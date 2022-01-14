@@ -7,7 +7,7 @@ const initialState = {
     currnt_city_name:"",
     currnt_service_id: "",
     city_array:[],
-    is_internet:false,
+    is_internet:null,
     
 };
 

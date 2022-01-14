@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import EmployeeDetails from './src/screens/EmployeeDetails';
 import InitialScreen from './src/screens/InitialScreen';
-import NetInfo from '@react-native-community/netinfo';
+import Splash from './src/screens/Splash';
 //AsyncStorage
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 //REDUX
@@ -27,48 +27,13 @@ const StackScreens = () => {
   )
 }
 const InitialStack = () => {
-  const dispatch = useDispatch();
-  // Internet connection listener
-  React.useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-        console.log('Connection type', state.type);
-        console.log('Is connected?', state.isConnected);
-        dispatch(IS_INTERNET_ACTIVE(state.isConnected));
-    });
-    return unsubscribe;
-}, []);
-
-
-  //REDUX
-  // const myState = useSelector((state) => state.changeState);
-  // const dispatch = useDispatch();
-  // console.warn(myState)
-  // console.log(typeof(myState.currnt_city_id))
-
-  // const [isCitySelected,setIsCitySelected] = useState("InitialScreen")
-
-  // const getData = async () => {
-  //   try {
-  //     const value = await AsyncStorage.getItem('@storage_Key')
-  //     if (value !== null) {
-  //       console.warn("city found", value)
-  //       setIsCitySelected("StackScreens")
-  //       // value previously stored
-  //     }
-  //   } catch (e) {
-  //     // error reading value
-  //     console.log("error when get city")
-  //   }
-  // }
-  // useEffect(() => {
-  //   getData()
-  // }, [])
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
       initialRouteName="InitialScreen">
       <Stack.Screen name="StackScreens" component={StackScreens} />
       <Stack.Screen name="InitialScreen" component={InitialScreen} />
+      <Stack.Screen name="Splash" component={Splash} />
     </Stack.Navigator>
   )
 }
