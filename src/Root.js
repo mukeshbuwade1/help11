@@ -61,7 +61,7 @@ const Root = ({ navigation }) => {
     }, [])
 
     const storeData = async (value) => {
-        console.error("data value =", value)
+        console.log("data value =", value)
         // const val= toString(value)
         // console.log("data val =", val)
         try {
@@ -102,9 +102,9 @@ const Root = ({ navigation }) => {
                     style={{ height: 50, width: 150, color: '#fff', }}
                     selectedValue={selectedCity}
                     onValueChange={(itemValue, itemIndex) => {
-                        console.error("data value initial =", itemValue)
-                        console.error("flag value =", flag)
-                        setSelectedCity(itemValue)
+                        console.log("data value initial =", itemValue)
+                        console.log("flag value =", flag)
+                        //setSelectedCity(itemValue)
                         storeData(itemValue)
 
                     }}>
@@ -175,50 +175,42 @@ const Root = ({ navigation }) => {
     //RENDER
     return (
         <View style={{ flex: 1, }}>
-            {
-            isInternetActive == false ? (
-                Alert.alert("Internet Error", "Please connect to your internet")
-            ) : (<View style={{ flex: 1, }}>
-                <View style={{ flex: 1, backgroundColor: COLOR.primaryDark, paddingTop: 80, paddingHorizontal: 20, alignItems: "flex-start", justifyContent: "flex-start" }} >
-                    <Text style={{ fontSize: 25, fontWeight: "700", color: "#fff" }} >WellCome</Text>
-                    <View style={{ marginTop: 30 }} >
-                        {myTab("Home", home)}
-                        {myTab("News", news)}
-                        {myTab("Video", film)}
-                        {myTab("AboutUs", information)}
-                    </View>
+            <View style={{ flex: 1, backgroundColor: COLOR.primaryDark, paddingTop: 80, paddingHorizontal: 20, alignItems: "flex-start", justifyContent: "flex-start" }} >
+                <Text style={{ fontSize: 25, fontWeight: "700", color: "#fff" }} >WellCome</Text>
+                <View style={{ marginTop: 30 }} >
+                    {myTab("Home", home)}
+                    {myTab("News", news)}
+                    {myTab("Video", film)}
+                    {myTab("AboutUs", information)}
                 </View>
-                <Animated.View style={{
-                    flexGrow: 1,
-                    position: "absolute",
-                    backgroundColor: COLOR.primary,
-                    top: 0, left: 0, right: 0, bottom: 0,
-                    paddingTop: active == "Home" ? 7 : 20,
-                    borderRadius: ShowMenu ? 15 : 0,
-                    //Animated view 
-                    transform: [
-                        { scale: scaleValue },
-                        { translateX: offsetValue }
-                    ]
-                }}
-                >
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 15, }}>
-                        <TouchableOpacity
-                            style={{ flexDirection: "row", alignItems: "center" }}
-                            onPress={() => { viewAnimation() }}>
-                            <Image source={ShowMenu ? close : menu} style={{ width: 20, height: 20, tintColor: "#fff" }} />
-                            <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: "600", color: "#fff" }}>{active}</Text>
-                        </TouchableOpacity>
-                        {
-                            active == "Home" ? selectCity() : null
-                        }
-                    </View>
-
-                    {selectScreen(active, navigation)}
-                </Animated.View>
             </View>
-            )
-            }
+            <Animated.View style={{
+                flexGrow: 1,
+                position: "absolute",
+                backgroundColor: COLOR.primary,
+                top: 0, left: 0, right: 0, bottom: 0,
+                paddingTop: active == "Home" ? 7 : 20,
+                borderRadius: ShowMenu ? 15 : 0,
+                //Animated view 
+                transform: [
+                    { scale: scaleValue },
+                    { translateX: offsetValue }
+                ]
+            }}
+            >
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 15, }}>
+                    <TouchableOpacity
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                        onPress={() => { viewAnimation() }}>
+                        <Image source={ShowMenu ? close : menu} style={{ width: 20, height: 20, tintColor: "#fff" }} />
+                        <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: "600", color: "#fff" }}>{active}</Text>
+                    </TouchableOpacity>
+                    {
+                        active == "Home" ? selectCity() : null
+                    }
+                </View>
+                {selectScreen(active, navigation)}
+            </Animated.View>
         </View>
     )
 }
