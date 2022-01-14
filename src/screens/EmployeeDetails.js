@@ -103,6 +103,9 @@ const EmployeeDetails = () => {
     return (
         <View style={{ flex: 1, backgroundColor: COLOR.primary, paddingHorizontal: 10 }}>
             <View style={{ padding: 10, flexDirection: "row", justifyContent: "space-between" }}>
+                <TouchableOpacity>
+                    
+                </TouchableOpacity>
                 <Text style={{ color: "#fff", fontSize: 13, fontWeight: "300" }} >City</Text>
                 <Text style={{ color: "#fff", fontSize: 13, fontWeight: "300" }} >Service</Text>
             </View>
