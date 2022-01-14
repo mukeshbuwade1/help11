@@ -19,7 +19,7 @@ const data = [
 
 const renderItem = ({ item }) => {
     return (
-        <TouchableOpacity onPress={() =>Linking.openURL(url) } style={{ marginBottom: 25, marginTop: 5 }} >
+        <TouchableOpacity onPress={() =>Linking.openURL(item.link) } style={{ marginBottom: 25, marginTop: 5 }} >
             <ImageBackground source={item.thumb} style={{ width: 325, height: 550, justifyContent: "center", alignItems: "center" }} >
                 <View style={{ padding: 15, backgroundColor: "#a00b", borderRadius: 15 }}>
                     <Text style={{ fontSize: 30, fontWeight: "bold", color: "#fff" }}>

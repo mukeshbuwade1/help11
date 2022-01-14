@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View ,Linking} from 'react-native';
 //constant
 import { COLOR, APIurls } from '../constant/constant';
 //REDUX
@@ -89,7 +89,9 @@ const EmployeeDetails = () => {
                             <Text style={{ fontSize: 14, fontWeight: "600", color: COLOR.textLight }} >{email}</Text>
                         </View>
                     </View>
-                    <TouchableOpacity style={{ backgroundColor: COLOR.textLight, flexDirection: "row", justifyContent: "center", alignItems: "center", padding: 5, marginTop: 5, borderRadius: 5 }}>
+                    <TouchableOpacity
+                    onPress={()=>Linking.openURL(`tel:+91${number}`)}
+                     style={{ backgroundColor: COLOR.textLight, flexDirection: "row", justifyContent: "center", alignItems: "center", padding: 5, marginTop: 5, borderRadius: 5 }}>
                         <Image source={call} style={{ width: 18, height: 18, marginRight: 20, }} tintColor={COLOR.primary} />
                         <Text style={{ fontSize: 14, fontWeight: "700", textTransform: "uppercase", color: COLOR.primary }}>call now</Text>
                     </TouchableOpacity>

@@ -102,7 +102,7 @@ const Root = ({ navigation }) => {
         return (
             <View style={{ height: 50, width: 150, justifyContent: "center" }}>
                 <Picker
-                dropdownIconColor={COLOR.primary}
+                dropdownIconColor={"#fff"}
                     style={{ height: 50, width: 150, color: '#fff', }}
                     selectedValue={selectedCity}
                     onValueChange={(itemValue, itemIndex) => {
