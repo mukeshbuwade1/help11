@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicator, View, StyleSheet, Dimensions } from "react-native";
+import { ActivityIndicator, View, StyleSheet, Dimensions,StatusBar } from "react-native";
 //import { ActivityIndicator, Colors } from "react-native-paper";
 // import Colors from '../Constants/Colors';
 import { COLOR } from "../constant/constant";
@@ -9,6 +9,7 @@ export default Loader = (props) => {
 
     return (
         <View style={{ ...STYLES.loadingContainer, ...props.loadingContainer }} >
+             <StatusBar backgroundColor={COLOR.primaryDark} barStyle={"light-content"} />
             <ActivityIndicator animating={true} style={STYLES.loader} size={props.loaderSize ? props.loaderSize : "large"} color={props.loader ? props.loader : "#fff"} />
         </View>
     );

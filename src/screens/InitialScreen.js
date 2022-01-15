@@ -14,7 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const windowWidth = Dimensions.get('window').width;
 
 const InitialScreen = ({ navigation }) => {
-    const [isInternetConected,setIsInternetConected] = useState(false)
+    const [isInternetConected, setIsInternetConected] = useState(false)
     //REDUX
     const myState = useSelector((state) => state.changeState);
     const dispatch = useDispatch();
@@ -34,15 +34,23 @@ const InitialScreen = ({ navigation }) => {
 
     const cityUrl = APIurls.cityURL
     const getCity = async () => {
-        console.log("---------city url-------", cityUrl)
-        const res = await axios.get(cityUrl)
-        // console.warn("---------city res-------", res)
-        if (res) {
-            setIsLoading(false)
+        console.log("InitialScreen---------city url-------", cityUrl)
+        console.log("CITY LIST LOADING..........")
+        try {
+            const res = await axios.get(cityUrl)
+            // console.warn("---------city res-------", res)
+            if (res) {
+                setIsLoading(false)
+            }
+            const cityData = res.data.cities;
+            console.log("CITY LIST LOADED SUCCESSFULLY..........")
+            setAllCity(cityData)
+            dispatch(CITY_ARRAY(cityData))
+
+        } catch (error) {
+            console.log("ERROR WHEN LOADING CITY LIST ..........&& REASON", error)
+
         }
-        const cityData = res.data.cities;
-        setAllCity(cityData)
-        dispatch(CITY_ARRAY(cityData))
     }
     useEffect(() => {
         // dispatch(IS_INTERNET_ACTIVE(value))
@@ -50,14 +58,13 @@ const InitialScreen = ({ navigation }) => {
     }, []);
     //AsyncStorage function.............
     const storeData = async (Value) => {
-        //console.log("data Value =", Value)
-        // const val= toString(Value)
-        // console.log("data val =", val)
+        console.log(`TRYING TO STORE CITY VALUE = ${Value} IN  AsyncStorage ............... `)
         try {
             await AsyncStorage.setItem('@storage_Key', "" + Value)
-            console.log("data saved in AsyncStorage", Value)
+            console.log(` CITY VALUE = ${Value} STORED SUCCESSFULLY IN  AsyncStorage :) `)
+            dispatch(CURRENT_CITY(Value))
         } catch (e) {
-            console.log("error when set AsyncStorage with ERROR : ", e)
+            console.log(`ERROR TO STORE CITY VALUE IN  AsyncStorage !!! ERRMSG ${e}`)
         }
     }
     const cityIsSelected = (Value) => {
@@ -65,22 +72,25 @@ const InitialScreen = ({ navigation }) => {
         // console.log(`for + async  && ${navigation}`)
         //dispatch(CURRENT_CITY(Value))
         console.log("dispatch({ type: CURRENT_CITY, payload: Value })", myState)
-        //navigation.navigate('StackScreens')
+        storeData(Value)
+        navigation.navigate('StackScreens')
+       
     }
 
     const getData = async () => {
+        console.log(`TRYING TO GRT CITY VALUE FROM  AsyncStorage ............... `)
         try {
             const value = await AsyncStorage.getItem('@storage_Key')
             if (value !== null) {
-                console.log("city found", value)
-                console.log(`fromasync ${value} && ${navigation}`)
+                // console.log("city found", value)
+                // console.log(`fromasync ${value} && ${navigation}`)
+                console.log(" CITY VALUE FOUND IN AsyncStorage", value)
                 cityIsSelected(value)
                 // setIsCitySelected("StackScreens")
                 // value previously stored
             }
         } catch (e) {
-            // error reading value
-            console.log("error when get city")
+            console.log("ERROR TO GET CITY VALUE FROM  AsyncStorage !!!  ERRMSG", e)
         }
     }
     useEffect(() => {

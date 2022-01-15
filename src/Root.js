@@ -13,15 +13,12 @@ import close from "./image/close.png";
 import menu from "./image/menu.png";
 import location from "./image/location.png";
 
-//header.........
-import Header from './component/Header';
 //screens......
 import Home from './screens/Home';
 import News from './screens/News';
 import Video from './screens/Video';
 import About from './screens/About';
-//component
-import { cityapi } from './tempdata/TempData';
+
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
 import { CURRENT_CITY, CITY_ARRAY } from "./redux/Action";
@@ -41,40 +38,40 @@ const Root = ({ navigation }) => {
     const isInternetActive = myState.is_internet
     console.log("currnt city", myState.currnt_city_id)
     console.log("*******redux data *******", myState)
+    const StoredCity = myState.city_array
 
     const [active, setactive] = useState("Home")
     const [ShowMenu, setShowMenu] = useState(false)
-    const [allCity, setAllCity] = useState([]);
+    const [allCity, setAllCity] = useState(StoredCity);
     const [selectedCity, setSelectedCity] = useState(initialSelectedCity);
     const [flag, setFlag] = useState(false)
-    const [isLoading,setIsLoading] = useState(true)
+    // const [isLoading,setIsLoading] = useState(true)
 
 
-    const cityUrl = APIurls.cityURL
-    const getCity = async () => {
-        console.log("--------- url-------", cityUrl)
-        const res = await axios.get(cityUrl)
-        if(res){
-            setIsLoading(false)
-        }
-        const cityData = res.data.cities;
-        setAllCity(cityData)
-        dispatch(CITY_ARRAY(cityData))
-    }
-    useEffect(() => {
-        getCity()
-    }, [])
+    // const cityUrl = APIurls.cityURL
+    // const getCity = async () => {
+    //     console.log("--------- url-------", cityUrl)
+    //     const res = await axios.get(cityUrl)
+    //     if(res){
+    //         setIsLoading(false)
+    //     }
+    //     const cityData = res.data.cities;
+    //     setAllCity(cityData)
+    //     dispatch(CITY_ARRAY(cityData))
+    // }
+    // useEffect(() => {
+    //     getCity()
+    // }, [])
 
     const storeData = async (value) => {
-        console.log("data value =", value)
-        // const val= toString(value)
-        // console.log("data val =", val)
+        // console.log("data value =", value)
+        console.log(`TRYING TO STORE CITY VALUE = ${value} IN  AsyncStorage ............... `)
         try {
             await AsyncStorage.setItem('@storage_Key', "" + value)
-            console.log("data saved in AsyncStorage", value)
+            console.log(` CITY VALUE = ${value} STORED SUCCESSFULLY IN  AsyncStorage :) `)
             dispatch(CURRENT_CITY(value))
         } catch (e) {
-            console.log("error when set AsyncStorage with ERROR : ", e)
+            console.log(`ERROR TO STORE CITY VALUE IN  AsyncStorage !!! ERRMSG ${e}`)
         }
     }
 
@@ -82,15 +79,14 @@ const Root = ({ navigation }) => {
         try {
             const value = await AsyncStorage.getItem('@storage_Key')
             if (value !== null) {
-                console.log("city found in root", value)
+                console.log(" CITY VALUE FOUND IN AsyncStorage", value)
                 // console.log(`fromasync ${value} && ${navigation}`)
                 //setSelectedCity(value)
                 // setIsCitySelected("StackScreens")
                 // value previously stored
             }
         } catch (e) {
-            // error reading value
-            console.log("error when get city in root")
+            console.log("ERROR TO GET CITY VALUE FROM  AsyncStorage !!!  ERRMSG", e)
         }
     }
     useEffect(() => {
@@ -176,7 +172,7 @@ const Root = ({ navigation }) => {
 
     }
     //RENDER
-    // const isLoading = false;
+    const isLoading = false;
     if (isLoading) return <Loader />;
     return (
         <View style={{ flex: 1, }}>
