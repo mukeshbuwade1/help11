@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View ,Linking} from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Linking } from 'react-native';
 //constant
 import { COLOR, APIurls } from '../constant/constant';
 //REDUX
@@ -9,9 +9,11 @@ import axios from 'axios';
 //image
 import boy from "../image/boy.png"
 import call from "../image/call.png"
-import Email from "../image/email.png"
+import Email from "../image/email.png";
+import left from "../image/left.png"
+// import { useIsFocused } from '@react-navigation/native';
 
-const EmployeeDetails = () => {
+const EmployeeDetails = ({ navigation }) => {
     //useState
     const [currentEmployee, setCurrentEmployee] = useState([])
     console.log("currentEmployee in EmployeeDetails", currentEmployee)
@@ -25,7 +27,7 @@ const EmployeeDetails = () => {
     console.log("---------url---------", createEmpoyeeLink);
 
     const getSevice = async () => {
-        console.log("--------- url-------",createEmpoyeeLink)
+        console.log("--------- url-------", createEmpoyeeLink)
         const res = await axios.get(createEmpoyeeLink)
         const employeeData = res.data.employees
         setCurrentEmployee(employeeData)
@@ -33,6 +35,31 @@ const EmployeeDetails = () => {
     useEffect(() => {
         getSevice()
     }, [])
+
+    // function ScreenWithCustomBackBehavior() {
+    //     // ...
+
+    //     useFocusEffect(
+    //       React.useCallback(() => {
+    //         const onBackPress = () => {
+    //           if (isSelectionModeEnabled()) {
+    //             disableSelectionMode();
+    //             return true;
+    //           } else {
+    //             return false;
+    //           }
+    //         };
+
+    //         BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+    //         return () =>
+    //           BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    //       }, [isSelectionModeEnabled, disableSelectionMode])
+    //     );
+
+    //     // ...
+    //   }
+
     const RenderItem = ({ item }) => {
         console.log(item)
         const { email, name, number } = item;
@@ -90,8 +117,8 @@ const EmployeeDetails = () => {
                         </View>
                     </View>
                     <TouchableOpacity
-                    onPress={()=>Linking.openURL(`tel:+91${number}`)}
-                     style={{ backgroundColor: COLOR.textLight, flexDirection: "row", justifyContent: "center", alignItems: "center", padding: 5, marginTop: 5, borderRadius: 5 }}>
+                        onPress={() => Linking.openURL(`tel:+91${number}`)}
+                        style={{ backgroundColor: COLOR.textLight, flexDirection: "row", justifyContent: "center", alignItems: "center", padding: 5, marginTop: 5, borderRadius: 5 }}>
                         <Image source={call} style={{ width: 18, height: 18, marginRight: 20, }} tintColor={COLOR.primary} />
                         <Text style={{ fontSize: 14, fontWeight: "700", textTransform: "uppercase", color: COLOR.primary }}>call now</Text>
                     </TouchableOpacity>
@@ -99,21 +126,26 @@ const EmployeeDetails = () => {
             </View>
         )
     }
+    // const Per = () => {
+    //     const isFocused = useIsFocused();
+    //     return <Text>{isFocused ? 'focused' : 'unfocused'}</Text>;
+    // }
     //render
     return (
         <View style={{ flex: 1, backgroundColor: COLOR.primary, paddingHorizontal: 10 }}>
             <View style={{ padding: 10, flexDirection: "row", justifyContent: "space-between" }}>
-                <TouchableOpacity>
-                    
+                <TouchableOpacity onPress={() => navigation.pop()}>
+                    <Image tintColor={"#fff"} source={left} style={{ width: 25, height: 20 }} />
                 </TouchableOpacity>
-                <Text style={{ color: "#fff", fontSize: 13, fontWeight: "300" }} >City</Text>
-                <Text style={{ color: "#fff", fontSize: 13, fontWeight: "300" }} >Service</Text>
+                {/* <Text style={{ color: "#fff", fontSize: 13, fontWeight: "300" }} >City</Text>
+                <Text style={{ color: "#fff", fontSize: 13, fontWeight: "300" }} >Service</Text> */}
             </View>
             <FlatList
                 data={currentEmployee}
                 renderItem={RenderItem}
                 keyExtractor={(item) => item.id}
             />
+{/* <Per/> */}
         </View>
     )
 }

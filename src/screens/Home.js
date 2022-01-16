@@ -44,7 +44,7 @@ const Home = ({ navigation }) => {
             setAllHeadlineText(Headline)
             const textlength = Headline.length
             setTimer(textlength * 100)
-            console.warn("textlength is ",textlength, " and type of textlength", typeof(textlength))
+            console.log("textlength is ",textlength, " and type of textlength", typeof(textlength))
 
         } catch (error) {
             console.log("ERROR WHEN LOADING HEADLINE ..........&& REASON",error)

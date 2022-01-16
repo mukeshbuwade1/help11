@@ -46,16 +46,17 @@ const InitialScreen = ({ navigation }) => {
             console.log("CITY LIST LOADED SUCCESSFULLY..........")
             setAllCity(cityData)
             dispatch(CITY_ARRAY(cityData))
+            getData()
 
         } catch (error) {
             console.log("ERROR WHEN LOADING CITY LIST ..........&& REASON", error)
 
         }
     }
-    useEffect(() => {
-        // dispatch(IS_INTERNET_ACTIVE(value))
-        getCity()
-    }, []);
+    // useEffect(() => {
+    //     // dispatch(IS_INTERNET_ACTIVE(value))
+    //     getCity()
+    // }, []);
     //AsyncStorage function.............
     const storeData = async (Value) => {
         console.log(`TRYING TO STORE CITY VALUE = ${Value} IN  AsyncStorage ............... `)
@@ -63,6 +64,7 @@ const InitialScreen = ({ navigation }) => {
             await AsyncStorage.setItem('@storage_Key', "" + Value)
             console.log(` CITY VALUE = ${Value} STORED SUCCESSFULLY IN  AsyncStorage :) `)
             dispatch(CURRENT_CITY(Value))
+            
         } catch (e) {
             console.log(`ERROR TO STORE CITY VALUE IN  AsyncStorage !!! ERRMSG ${e}`)
         }
@@ -73,12 +75,12 @@ const InitialScreen = ({ navigation }) => {
         //dispatch(CURRENT_CITY(Value))
         console.log("dispatch({ type: CURRENT_CITY, payload: Value })", myState)
         storeData(Value)
-        navigation.navigate('StackScreens')
+        //navigation.navigate('StackScreens')
        
     }
 
     const getData = async () => {
-        console.log(`TRYING TO GRT CITY VALUE FROM  AsyncStorage ............... `)
+        console.log(`TRYING TO GET CITY VALUE FROM  AsyncStorage ............... `)
         try {
             const value = await AsyncStorage.getItem('@storage_Key')
             if (value !== null) {
@@ -88,13 +90,16 @@ const InitialScreen = ({ navigation }) => {
                 cityIsSelected(value)
                 // setIsCitySelected("StackScreens")
                 // value previously stored
+            }else{
+                console.log("CITY VALUE NOT FOUND IN AsyncStorage")
             }
         } catch (e) {
             console.log("ERROR TO GET CITY VALUE FROM  AsyncStorage !!!  ERRMSG", e)
         }
     }
     useEffect(() => {
-        getData()
+        getCity()
+        
     }, [])
     //render
     // const isLoading = true;
@@ -108,7 +113,6 @@ const InitialScreen = ({ navigation }) => {
                 alignItems: "center"
             }}>
             <StatusBar backgroundColor={COLOR.primaryDark} barStyle={"light-content"} />
-            {/* {isInternetActive === false ? Alert.alert("Internet Error", "Please connect to Network") : console.log("internet connected")} */}
             <Image source={undraw} style={{ width: 300, height: 211 }} />
             <View style={{ width: windowWidth * 0.8, }}>
                 <Text

@@ -11,7 +11,7 @@ import axios from 'axios';
 // import CommonHeader from '../component/CommonHeader';
 //.............
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { COLOR } from '../constant/constant';
+import { COLOR, APIurls } from '../constant/constant';
 //.................
 
 
@@ -28,19 +28,26 @@ const videodata = [
 
 ]
 const Video = ({ navigation }) => {
+    const [videoList, setVideoList] = useState([])
     const [isLoading, setIsLoading] = useState(true)
-    const getVideoData = async() => {
+    const getVideoData = async () => {
+        const url = APIurls.youtubeUrl
+        console.log("VIDEO LIST LOADING..........")
         try {
-            const res = await axios.get("https://www.getpostman.com/collections/5685ec58059ef4609039");
-            const api = res.data.item
-            const url = api[5].request.url
-            if(url){
+            const res = await axios.get(url);
+            const data = res.data.videos
+            console.log(data)
+            setVideoList(data)
+            // const api = res.data.item
+            // const url = api[5].request.url
+            if (url) {
                 setIsLoading(false)
+                console.log("VIDEO LIST LOADED SUCCESSFULLY :)")
             }
-            console.log("--------- url-------", url)
-            
+            console.log("video.js------------url----------", url)
+
         } catch (error) {
-            console.error(error)
+            console.log("ERROR WHEN LOADING VIDEO LIST .......... && ERRMSG", error)
         }
     }
 
@@ -49,18 +56,28 @@ const Video = ({ navigation }) => {
     }, [])
 
 
+    // <View style={{ width: windowWidth, height: 7, backgroundColor: COLOR.primaryDark }}>
+    //             </View>
+    //             <ImageBackground source={thumbnail} style={{ width: windowWidth, height: 250, justifyContent: "center", alignItems: "center" }}>
+    //                 {/* <AntDesign style={{ backgroundColor: "#000", borderRadius: 100, opacity: 0.7 }} name="play" size={80} color="#fff" /> */}
+    //                 <AntDesign style={{ backgroundColor: "#000", borderRadius: 100, opacity: 0.7, padding: 20 }} name="stepforward" size={30} color="#fff" />
+    //             </ImageBackground>
+    //             <Text style={{ fontSize: 18, fontWeight: "700", marginHorizontal: 10, marginVertical: 5, color: "#fff" }}>{title}</Text>
+
+
     const renderItem = ({ item }) => {
-        const { thumbnail, title, link } = item
+        console.error(item)
+        const { image, title, link } = item
         return (
             <TouchableOpacity style={{ marginVertical: 20 }} onPress={() => Linking.openURL(link)}>
                 <View style={{ width: windowWidth, height: 7, backgroundColor: COLOR.primaryDark }}>
                 </View>
-                <ImageBackground source={thumbnail} style={{ width: windowWidth, height: 250, justifyContent: "center", alignItems: "center" }}>
+                <ImageBackground source={{uri:image}} style={{ width: windowWidth, height: 250, justifyContent: "center", alignItems: "center" }}>
                     {/* <AntDesign style={{ backgroundColor: "#000", borderRadius: 100, opacity: 0.7 }} name="play" size={80} color="#fff" /> */}
                     <AntDesign style={{ backgroundColor: "#000", borderRadius: 100, opacity: 0.7, padding: 20 }} name="stepforward" size={30} color="#fff" />
                 </ImageBackground>
-
                 <Text style={{ fontSize: 18, fontWeight: "700", marginHorizontal: 10, marginVertical: 5, color: "#fff" }}>{title}</Text>
+
 
             </TouchableOpacity>
         )
@@ -70,14 +87,11 @@ const Video = ({ navigation }) => {
     if (isLoading) return <Loader />;
     return (
         <SafeAreaView style={{ flex: 1, alignItems: "center", backgroundColor: COLOR.primary }}>
-            {/* <CommonHeader navigation={navigation} title={"Videos"}/> */}
-
             <FlatList
-                data={videodata}
+                data={videoList}
                 renderItem={renderItem}
                 keyExtractor={(i, id) => id}
             />
-
         </SafeAreaView>
     )
 }

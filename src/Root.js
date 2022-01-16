@@ -39,6 +39,7 @@ const Root = ({ navigation }) => {
     console.log("currnt city", myState.currnt_city_id)
     console.log("*******redux data *******", myState)
     const StoredCity = myState.city_array
+    console.warn("stored city", StoredCity)
 
     const [active, setactive] = useState("Home")
     const [ShowMenu, setShowMenu] = useState(false)
@@ -102,8 +103,8 @@ const Root = ({ navigation }) => {
                     style={{ height: 50, width: 150, color: '#fff', }}
                     selectedValue={selectedCity}
                     onValueChange={(itemValue, itemIndex) => {
-                        console.log("data value initial =", itemValue)
-                        console.log("flag value =", flag)
+                        console.error("data value initial =", itemValue)
+                        console.error("flag value =", flag)
                         setSelectedCity(itemValue)
                         storeData(itemValue)
                     }}>
