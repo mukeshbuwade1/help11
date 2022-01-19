@@ -5,11 +5,12 @@ export const COLOR = {
 
 }
 export const APIurls = {
-    cityURL: "http://renews18.com/api/city_list",
-    serviceURL: "http://renews18.com/api/service_list",
-    employeeURL: "http://renews18.com/api/employee_list?",
-    newspaper: "http://renews18.com/api/news_list",
-    youtubeUrl: "http://renews18.com/api/youtube_list",
-    headlineUrl:"http://renews18.com/api/headline_list"
+    cityURL: "https://renews18.com/api/city_list",
+    serviceURL: "https://renews18.com/api/service_list",
+    employeeURL: "https://renews18.com/api/employee_list?",
+    newspaper: "https://renews18.com/api/news_list",
+    youtubeUrl: "https://renews18.com/api/youtube_list",
+    headlineUrl:"https://renews18.com/api/headline_list",
+    posterImgUrl : "https://renews18.com/api/poster_list"
     
 }

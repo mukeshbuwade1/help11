@@ -14,23 +14,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const windowWidth = Dimensions.get('window').width;
 
 const InitialScreen = ({ navigation }) => {
+    const [allCity, setAllCity] = useState([]);
+    const [selectedCity, setSelectedCity] = useState();
+    const [isLoading, setIsLoading] = useState(true)
     const [isInternetConected, setIsInternetConected] = useState(false)
     //REDUX
     const myState = useSelector((state) => state.changeState);
     const dispatch = useDispatch();
     // Internet connection listener
     React.useEffect(() => {
-        const unsubscribe = NetInfo.addEventListener(state => {
+        const unsubscribe = NetInfo.addEventListener(state => { 
             console.log('Connection type', state.type);
+            // console.log(`Connection type  ${state.type}`);
             console.log('Is connected?', state.isConnected);
             setIsInternetConected(state.isConnected)
             dispatch(IS_INTERNET_ACTIVE(state.isConnected));
         });
         return unsubscribe;
     }, []);
-    const [allCity, setAllCity] = useState([]);
-    const [selectedCity, setSelectedCity] = useState();
-    const [isLoading, setIsLoading] = useState(true)
+    
 
     const cityUrl = APIurls.cityURL
     const getCity = async () => {
@@ -41,12 +43,17 @@ const InitialScreen = ({ navigation }) => {
             // console.warn("---------city res-------", res)
             if (res) {
                 setIsLoading(false)
+                const cityData = res.data.cities;
+                console.log("CITY LIST LOADED SUCCESSFULLY..........")
+                setAllCity(cityData)
+                dispatch(CITY_ARRAY(cityData))
+                if(myState.city_array==cityData){
+                    getData()
+                }else{
+                    dispatch(CITY_ARRAY(cityData))
+                    getData()
+                }
             }
-            const cityData = res.data.cities;
-            console.log("CITY LIST LOADED SUCCESSFULLY..........")
-            setAllCity(cityData)
-            dispatch(CITY_ARRAY(cityData))
-
         } catch (error) {
             console.log("ERROR WHEN LOADING CITY LIST ..........&& REASON", error)
 
@@ -73,12 +80,12 @@ const InitialScreen = ({ navigation }) => {
         //dispatch(CURRENT_CITY(Value))
         console.log("dispatch({ type: CURRENT_CITY, payload: Value })", myState)
         storeData(Value)
-        navigation.navigate('StackScreens')
+        //navigation.navigate('StackScreens')
        
     }
 
     const getData = async () => {
-        console.log(`TRYING TO GRT CITY VALUE FROM  AsyncStorage ............... `)
+        console.log(`TRYING TO GET CITY VALUE FROM  AsyncStorage ............... `)
         try {
             const value = await AsyncStorage.getItem('@storage_Key')
             if (value !== null) {
@@ -94,7 +101,9 @@ const InitialScreen = ({ navigation }) => {
         }
     }
     useEffect(() => {
-        getData()
+        if(isInternetConected){
+            //getData()
+        }
     }, [])
     //render
     // const isLoading = true;

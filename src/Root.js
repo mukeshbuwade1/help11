@@ -21,7 +21,7 @@ import About from './screens/About';
 
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { CURRENT_CITY, CITY_ARRAY } from "./redux/Action";
+import { CURRENT_CITY, CITY_ARRAY,HOME_TAB_FLAG } from "./redux/Action";
 //API URL
 import { APIurls } from './constant/constant';
 import axios from 'axios';
@@ -43,26 +43,9 @@ const Root = ({ navigation }) => {
     const [active, setactive] = useState("Home")
     const [ShowMenu, setShowMenu] = useState(false)
     const [allCity, setAllCity] = useState(StoredCity);
-    const [selectedCity, setSelectedCity] = useState(initialSelectedCity);
+    const [selectedCity, setSelectedCity] = useState(myState.currnt_city_id);
     const [flag, setFlag] = useState(false)
-    // const [isLoading,setIsLoading] = useState(true)
-
-
-    // const cityUrl = APIurls.cityURL
-    // const getCity = async () => {
-    //     console.log("--------- url-------", cityUrl)
-    //     const res = await axios.get(cityUrl)
-    //     if(res){
-    //         setIsLoading(false)
-    //     }
-    //     const cityData = res.data.cities;
-    //     setAllCity(cityData)
-    //     dispatch(CITY_ARRAY(cityData))
-    // }
-    // useEffect(() => {
-    //     getCity()
-    // }, [])
-
+   
     const storeData = async (value) => {
         // console.log("data value =", value)
         console.log(`TRYING TO STORE CITY VALUE = ${value} IN  AsyncStorage ............... `)
@@ -75,11 +58,14 @@ const Root = ({ navigation }) => {
         }
     }
 
-    const getData = async () => {
+    const getData =  async() => {
         try {
-            const value = await AsyncStorage.getItem('@storage_Key')
-            if (value !== null) {
-                console.log(" CITY VALUE FOUND IN AsyncStorage", value)
+            const Value = await AsyncStorage.getItem('@storage_Key')
+            if (Value !== null) {
+                console.error(" CITY VALUE FOUND IN AsyncStorage", Value)
+                
+                dispatch(CURRENT_CITY(Value))
+                return Value
                 // console.log(`fromasync ${value} && ${navigation}`)
                 //setSelectedCity(value)
                 // setIsCitySelected("StackScreens")
@@ -87,13 +73,21 @@ const Root = ({ navigation }) => {
             }
         } catch (e) {
             console.log("ERROR TO GET CITY VALUE FROM  AsyncStorage !!!  ERRMSG", e)
+            return  myState.currnt_city_id
         }
     }
     useEffect(() => {
-        getData()
+       getData()
     }, [])
+    // useEffect(()=>{
+        
+    //     const data =  myState.currnt_city_id;
+    //     if(data.toString().length !=0){
+           
+    //         setSelectedCity(data)
+    //     }
+    // })
 
-    console.log("selectedCity", selectedCity)
     const selectCity = () => {
         return (
             <View style={{ height: 50, width: 150, justifyContent: "center" }}>
@@ -102,8 +96,8 @@ const Root = ({ navigation }) => {
                     style={{ height: 50, width: 150, color: '#fff', }}
                     selectedValue={selectedCity}
                     onValueChange={(itemValue, itemIndex) => {
-                        console.log("data value initial =", itemValue)
-                        console.log("flag value =", flag)
+                        // console.log("data value initial =", itemValue)
+                        // console.log("flag value =", flag)
                         setSelectedCity(itemValue)
                         storeData(itemValue)
                     }}>
@@ -139,6 +133,14 @@ const Root = ({ navigation }) => {
 
         setShowMenu(!ShowMenu)
     }
+    console.log("myState.home_tab)",myState.home_tab)
+    useEffect(()=>{
+        if(myState.home_tab){
+            setactive("Home")
+            console.log("myState.home_tab",myState.home_tab)
+        }
+    },[active,myState.home_tab])
+    
 
     const selectScreen = (active, navigation) => {
         switch (active) {
@@ -156,8 +158,9 @@ const Root = ({ navigation }) => {
         }
     }
     const activewindowAndAnimation = (Title) => {
+        dispatch(HOME_TAB_FLAG(false))
         setactive(Title),
-            viewAnimation()
+        viewAnimation()
     }
 
     const myTab = (Title, icon) => {

@@ -1,41 +1,31 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Linking, Dimensions, Image, SafeAreaView, FlatList, ImageBackground } from 'react-native';
-// import { AntDesign } from '@expo/vector-icons';
-// import { Colors } from "../constant/Constant";
-import thumbnail from "../image/thumbnail.jpg";
-import err from "../image/404.jpg";
-import insta from "../image/insta.jpg";
-import newn from "../image/newn.jpg";
-import iso from "../image/iso.jpg";
+import { BackHandler,StyleSheet, Text, View, TouchableOpacity, Linking, Dimensions, Image, SafeAreaView, FlatList, ImageBackground } from 'react-native';
 import axios from 'axios';
-// import CommonHeader from '../component/CommonHeader';
 //.............
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { COLOR } from '../constant/constant';
+import { COLOR, APIurls } from '../constant/constant';
 //.................
-
+//REDUX
+import { useDispatch, useSelector } from "react-redux";
+import { CURRENT_CITY, HOME_TAB_FLAG } from "../redux/Action";
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
-
-const videodata = [
-    { thumbnail: thumbnail, title: "Create a Netflix logo using css", link: "https://www.youtube.com/watch?v=hMgidlSVRmk", },
-    { thumbnail: err, title: "Amazing 404 Typography Page Using Html & CSS Only", link: "https://www.youtube.com/watch?v=gSpCRacA6ck", },
-    { thumbnail: insta, title: "Instagram logo with HTML and CSS", link: "https://www.youtube.com/watch?v=urUVzGzx-ks", },
-    { thumbnail: newn, title: "Attractive Isometric text by HTML and CSS", link: "https://www.youtube.com/watch?v=uv-s1H610Dw", },
-    { thumbnail: iso, title: "Atractive Neon Text || webdevelopment tricks 2021", link: "https://www.youtube.com/watch?v=89Aroh2pBN0", },
-
-]
 const Video = ({ navigation }) => {
+    const myState = useSelector((state) => state.changeState)
+    const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(true)
+    const [videodata, setVideodata] = useState([])
     const getVideoData = async() => {
+        const url = APIurls.youtubeUrl;
+        console.log("VIDEOS LOADING..........")
         try {
-            const res = await axios.get("https://www.getpostman.com/collections/5685ec58059ef4609039");
-            const api = res.data.item
-            const url = api[5].request.url
-            if(url){
+            console.log("------------url----------", url)
+            const res = await axios.get(url);
+            console.error("video link", res.data.videos)
+            if(res.data.result){
                 setIsLoading(false)
+                setVideodata(res.data.videos)
             }
             console.log("--------- url-------", url)
             
@@ -43,25 +33,33 @@ const Video = ({ navigation }) => {
             console.error(error)
         }
     }
-
     useEffect(() => {
         getVideoData()
     }, [])
 
+//   backhandler
+useEffect(() => {
+    const backAction = () => {
+        dispatch(HOME_TAB_FLAG(true))
+      return true;
+    };
 
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
+  }, []);
     const renderItem = ({ item }) => {
-        const { thumbnail, title, link } = item
+        const { image, title, link } = item
         return (
             <TouchableOpacity style={{ marginVertical: 20 }} onPress={() => Linking.openURL(link)}>
                 <View style={{ width: windowWidth, height: 7, backgroundColor: COLOR.primaryDark }}>
                 </View>
-                <ImageBackground source={thumbnail} style={{ width: windowWidth, height: 250, justifyContent: "center", alignItems: "center" }}>
-                    {/* <AntDesign style={{ backgroundColor: "#000", borderRadius: 100, opacity: 0.7 }} name="play" size={80} color="#fff" /> */}
+                <ImageBackground source={{uri:image}} resizeMode="cover" style={{ width: windowWidth, height: 250, justifyContent: "center", alignItems: "center" }}>                    
                     <AntDesign style={{ backgroundColor: "#000", borderRadius: 100, opacity: 0.7, padding: 20 }} name="stepforward" size={30} color="#fff" />
                 </ImageBackground>
-
                 <Text style={{ fontSize: 18, fontWeight: "700", marginHorizontal: 10, marginVertical: 5, color: "#fff" }}>{title}</Text>
-
             </TouchableOpacity>
         )
     }
@@ -70,14 +68,11 @@ const Video = ({ navigation }) => {
     if (isLoading) return <Loader />;
     return (
         <SafeAreaView style={{ flex: 1, alignItems: "center", backgroundColor: COLOR.primary }}>
-            {/* <CommonHeader navigation={navigation} title={"Videos"}/> */}
-
             <FlatList
                 data={videodata}
                 renderItem={renderItem}
                 keyExtractor={(i, id) => id}
             />
-
         </SafeAreaView>
     )
 }
