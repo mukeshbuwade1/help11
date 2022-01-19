@@ -89,8 +89,7 @@ const InitialScreen = ({ navigation }) => {
         try {
             const value = await AsyncStorage.getItem('@storage_Key')
             if (value !== null) {
-                // console.log("city found", value)
-                // console.log(`fromasync ${value} && ${navigation}`)
+                // console.log("city found", value
                 console.log(" CITY VALUE FOUND IN AsyncStorage", value)
                 cityIsSelected(value)
                 // setIsCitySelected("StackScreens")
