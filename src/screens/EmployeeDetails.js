@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View ,Linking} from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View ,Linking,BackHandler} from 'react-native';
 //constant
 import { COLOR, APIurls } from '../constant/constant';
 //REDUX
@@ -10,8 +10,11 @@ import axios from 'axios';
 import boy from "../image/boy.png"
 import call from "../image/call.png"
 import Email from "../image/email.png"
+import left from "../image/left.png"
 
-const EmployeeDetails = () => {
+const EmployeeDetails = ({ route,navigation}) => {
+    const {head} = route.params;
+    console.warn(head)
     //useState
     const [currentEmployee, setCurrentEmployee] = useState([])
     console.log("currentEmployee in EmployeeDetails", currentEmployee)
@@ -33,6 +36,21 @@ const EmployeeDetails = () => {
     useEffect(() => {
         getSevice()
     }, [])
+
+    
+// backhandeler
+const backAction = () => {
+    navigation.pop()
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, []);
+
     const RenderItem = ({ item }) => {
         console.log(item)
         const { email, name, number } = item;
@@ -102,12 +120,12 @@ const EmployeeDetails = () => {
     //render
     return (
         <View style={{ flex: 1, backgroundColor: COLOR.primary, paddingHorizontal: 10 }}>
-            <View style={{ padding: 10, flexDirection: "row", justifyContent: "space-between" }}>
-                <TouchableOpacity>
-                    
+            <View style={{ padding: 10, flexDirection: "row", }}>
+                <TouchableOpacity onPress={()=>navigation.pop()}>
+                    <Image tintColor={"#fff"} source={left} style={{width:25, height:18}} />
                 </TouchableOpacity>
-                <Text style={{ color: "#fff", fontSize: 13, fontWeight: "300" }} >City</Text>
-                <Text style={{ color: "#fff", fontSize: 13, fontWeight: "300" }} >Service</Text>
+                <Text style={{ color: "#fff", fontSize: 15, fontWeight: "700", textTransform:"uppercase", marginLeft:10 }} > {head}</Text>
+               
             </View>
             <FlatList
                 data={currentEmployee}

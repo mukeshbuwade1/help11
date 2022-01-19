@@ -64,12 +64,12 @@ const Home = ({ navigation }) => {
 
     const getPosterImg = async () => {
         const PosterImageUrl = APIurls.posterImgUrl;
-        console.warn(`home-----------url---------- ${PosterImageUrl}`);
+        console.log(`home-----------url---------- ${PosterImageUrl}`);
         console.log(`TRYING TO GET POSTER IMAGES ................`);
         try {
             const res = await axios.get(PosterImageUrl)
             console.log(`POSTER IMAGES LOADED SUCCESSFULLY   :) `)
-            console.warn(JSON.stringify(res.data.posters))
+            console.log(JSON.stringify(res.data.posters))
             const imageArr = res.data.posters
             let ImgUrl = []
             for(let i=0; i<imageArr.length;i++){
@@ -110,10 +110,10 @@ const Home = ({ navigation }) => {
           BackHandler.removeEventListener("hardwareBackPress", backAction);
       }, []);
 
-    const getEmployee = (id) => {
+    const getEmployee = (id,title) => {        
         dispatch(SET_SERVICE_ID(id))
-        if (myState.currnt_city_id.length != 0) {
-            navigation.navigate('EmployeeDetails')
+        if (myState.currnt_city_id.length != 0) {        
+            navigation.navigate('EmployeeDetails',{head:title})
         } else {
             alert("select city again")
         }
@@ -123,7 +123,7 @@ const Home = ({ navigation }) => {
         const { id, file, title } = item;
         return (
             <TouchableOpacity
-                onPress={() => getEmployee(id, navigation)}
+                onPress={() => getEmployee(id, title,navigation)}
                 style={{
                     backgroundColor: '#cfaca9',
                     margin: 5,
