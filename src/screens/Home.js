@@ -75,7 +75,7 @@ const Home = ({ navigation }) => {
             for(let i=0; i<imageArr.length;i++){
                 ImgUrl =[...ImgUrl,imageArr[i].image]
             }
-            console.log('ImgUrl',ImgUrl)
+            //console.log('ImgUrl',ImgUrl)
             setPosterImg(ImgUrl)
            
         } catch (error) {

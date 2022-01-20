@@ -4,14 +4,14 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.app",
+  "applicationId": "com.android.renews",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 1012,
-      "versionName": "1.0.12",
+      "versionCode": 102,
+      "versionName": "1.0.2",
       "outputFile": "app-release.apk"
     }
   ]

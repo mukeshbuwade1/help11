@@ -18,12 +18,13 @@ const InitialScreen = ({ navigation }) => {
     const [selectedCity, setSelectedCity] = useState();
     const [isLoading, setIsLoading] = useState(true)
     const [isInternetConected, setIsInternetConected] = useState(false)
+    const [isCityFound, setIsCityFound] = useState(false)
     //REDUX
     const myState = useSelector((state) => state.changeState);
     const dispatch = useDispatch();
     // Internet connection listener
     React.useEffect(() => {
-        const unsubscribe = NetInfo.addEventListener(state => { 
+        const unsubscribe = NetInfo.addEventListener(state => {
             console.log('Connection type', state.type);
             // console.log(`Connection type  ${state.type}`);
             console.log('Is connected?', state.isConnected);
@@ -32,7 +33,7 @@ const InitialScreen = ({ navigation }) => {
         });
         return unsubscribe;
     }, []);
-    
+
 
     const cityUrl = APIurls.cityURL
     const getCity = async () => {
@@ -42,25 +43,19 @@ const InitialScreen = ({ navigation }) => {
             const res = await axios.get(cityUrl)
             // console.warn("---------city res-------", res)
             if (res) {
-                setIsLoading(false)
                 const cityData = res.data.cities;
                 console.log("CITY LIST LOADED SUCCESSFULLY..........")
                 setAllCity(cityData)
                 dispatch(CITY_ARRAY(cityData))
-                if(myState.city_array==cityData){
-                    getData()
-                }else{
-                    dispatch(CITY_ARRAY(cityData))
-                    getData()
-                }
+                console.log("CHECK IF USER SELECT CITY ALLREADY..........")
+                getData()
+
             }
         } catch (error) {
             console.log("ERROR WHEN LOADING CITY LIST ..........&& REASON", error)
-
         }
     }
     useEffect(() => {
-        // dispatch(IS_INTERNET_ACTIVE(value))
         getCity()
     }, []);
     //AsyncStorage function.............
@@ -74,93 +69,61 @@ const InitialScreen = ({ navigation }) => {
             console.log(`ERROR TO STORE CITY VALUE IN  AsyncStorage !!! ERRMSG ${e}`)
         }
     }
-    const cityIsSelected = (Value) => {
-        //console.log(`fromasync ${Value}`)
-        // console.log(`for + async  && ${navigation}`)
-        //dispatch(CURRENT_CITY(Value))
-        console.log("dispatch({ type: CURRENT_CITY, payload: Value })", myState)
-        storeData(Value)
-        //navigation.navigate('StackScreens')
-       
-    }
-
     const getData = async () => {
         console.log(`TRYING TO GET CITY VALUE FROM  AsyncStorage ............... `)
         try {
             const value = await AsyncStorage.getItem('@storage_Key')
             if (value !== null) {
-                // console.log("city found", value
                 console.log(" CITY VALUE FOUND IN AsyncStorage", value)
-                cityIsSelected(value)
-                // setIsCitySelected("StackScreens")
-                // value previously stored
+                setSelectedCity(value)
+                // setIsLoading(false)
+                onpressAction(value)
+                // setTimeout(() => {
+                //     onpressAction(value)
+                // }, 1000);
+            } else {
+                console.log(" CITY VALUE NOT FOUND IN AsyncStorage")
+                setIsLoading(false)
             }
         } catch (e) {
             console.log("ERROR TO GET CITY VALUE FROM  AsyncStorage !!!  ERRMSG", e)
+            setIsLoading(false)
         }
     }
-    useEffect(() => {
-        if(isInternetConected){
-            //getData()
+
+    const onpressAction = (selectedCity) => {
+        console.warn("selectedCity", selectedCity)
+        if (selectedCity) {
+            dispatch(CURRENT_CITY(selectedCity))
+            storeData(selectedCity)
+            navigation.navigate('StackScreens')
+        } else {
+            console.log("please select city first ")
         }
-    }, [])
+    }
+
+
     //render
-    // const isLoading = true;
+    // isLoading = true;
     if (isLoading) return <Loader />;
     return (
         <View
-            style={{
-                flex: 1,
-                backgroundColor: COLOR.primary,
-                padding: 20,
-                alignItems: "center"
-            }}>
+            style={styles.container}>
             <StatusBar backgroundColor={COLOR.primaryDark} barStyle={"light-content"} />
-            {/* {isInternetActive === false ? Alert.alert("Internet Error", "Please connect to Network") : console.log("internet connected")} */}
             <Image source={undraw} style={{ width: 300, height: 211 }} />
             <View style={{ width: windowWidth * 0.8, }}>
-                <Text
-                    style={{
-                        fontSize: 20,
-                        fontWeight: "700",
-                        marginLeft: 5,
-                        color: "#fff"
-                    }}>
-                    Select City
-                </Text>
+                <Text style={styles.title}> Select City </Text>
                 <View
-                    style={{
-                        width: "100%",
-                        backgroundColor: isInternetConected ? COLOR.primaryDark : "transparent",
-                        paddingVertical: 10,
-                        paddingHorizontal: 5,
-                        borderRadius: 10,
-                        marginTop: 5
-                    }}>
+                    style={[styles.cityContainer, { backgroundColor: isInternetConected ? COLOR.primaryDark : "transparent", }]}>
                     {/* map mathod */}
                     {
                         allCity.map((item, i) => {
                             return (
                                 <TouchableOpacity
-                                    style={{
-                                        backgroundColor: selectedCity == item.id ? COLOR.primary : "transparent",
-                                        paddingLeft: 25,
-                                        paddingVertical: 10,
-                                        borderRadius: 5
-                                    }}
+                                    style={[styles.cityRow, { backgroundColor: selectedCity == item.id ? COLOR.primary : "transparent", }]}
                                     key={i}
-                                    onPress={() => {
-
-                                        setSelectedCity(item.id)
-                                    }}>
-                                    <Text
-                                        style={{
-                                            fontSize: 16,
-                                            fontWeight: "500",
-                                            color: "#fff",
-                                            textTransform: "capitalize",
-                                        }}>{item.name}
-                                    </Text>
+                                    onPress={() => { setSelectedCity(item.id) }}>
+                                    <Text style={styles.cityText}>{item.name}</Text>
                                 </TouchableOpacity>
                             )
                         })
@@ -170,28 +133,10 @@ const InitialScreen = ({ navigation }) => {
             {/* next button */}
             {selectedCity ? (
                 <TouchableOpacity
-                    onPress={() => {
-                        // console.log("selectedCity", selectedCity)
-                        if (selectedCity) {
-                            dispatch(CURRENT_CITY(selectedCity))
-                            storeData(selectedCity)
-                            navigation.navigate('StackScreens')
-                        } else {
-                            console.log("please select city first ")
-                        }
-                    }}
-                    style={{
-                        position: "absolute",
-                        bottom: 20, left: 10, right: 10,
-                        backgroundColor: COLOR.primaryDark,
-                        borderRadius: 5,
-                        paddingVertical: 10,
-                        alignItems: "center"
-                    }}
+                    onPress={() => onpressAction(selectedCity)}
+                    style={styles.nextButton}
                 >
-                    <Text style={{ fontWeight: "700", fontSize: 18, color: "#fff" }}>
-                        NEXT
-                    </Text>
+                    <Text style={{ fontWeight: "700", fontSize: 18, color: "#fff" }}>NEXT</Text>
                 </TouchableOpacity>
             ) : <Text></Text>}
 
@@ -201,4 +146,45 @@ const InitialScreen = ({ navigation }) => {
 
 export default InitialScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: COLOR.primary,
+        padding: 20,
+        alignItems: "center"
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: "700",
+        marginLeft: 5,
+        color: "#fff"
+    },
+    cityContainer: {
+        width: "100%",
+        paddingVertical: 10,
+        paddingHorizontal: 5,
+        borderRadius: 10,
+        marginTop: 5
+    },
+    cityRow: {
+        paddingLeft: 25,
+        paddingVertical: 10,
+        borderRadius: 5
+    },
+    cityText: {
+        fontSize: 16,
+        fontWeight: "500",
+        color: "#fff",
+        textTransform: "capitalize",
+    },
+    nextButton: {
+        position: "absolute",
+        bottom: 20, left: 10, right: 10,
+        backgroundColor: COLOR.primaryDark,
+        borderRadius: 5,
+        paddingVertical: 10,
+        alignItems: "center"
+    }
+
+})
+
