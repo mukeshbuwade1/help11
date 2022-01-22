@@ -3,7 +3,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
-target 'app' do
+target 'REnews' do
   config = use_native_modules!
 
   use_react_native!(
@@ -12,7 +12,7 @@ target 'app' do
     :hermes_enabled => false
   )
 
-  target 'appTests' do
+  target 'REnewsTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -25,6 +25,6 @@ target 'app' do
 
   post_install do |installer|
     react_native_post_install(installer)
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    __REnewsly_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end

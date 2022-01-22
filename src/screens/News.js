@@ -1,5 +1,5 @@
-import React from 'react'
-import { ImageBackground, ActivityIndicator, FlatList, Linking, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import React,{useEffect} from 'react'
+import {BackHandler,Alert ,   FlatList,  SafeAreaView, StyleSheet, Text, TouchableOpacity, View,  } from 'react-native';
 // import CommonHeader from '../component/CommonHeader';
 // import { Colors } from '../constant/Constant';
 import { APIurls, COLOR } from '../constant/constant';
@@ -9,7 +9,7 @@ import axios from "axios";
 import Loader from '../component/Loader';
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
-// import { CURRENT_CITY, SET_SERVICE_ID } from "../redux/Action";
+import { HOME_TAB_FLAG,  } from "../redux/Action";
 
 const News = () => {
     const [news, setNews] = React.useState([])
@@ -17,6 +17,7 @@ const News = () => {
     //REDUX
     const myState = useSelector((state) => state.changeState);
     const dispatch = useDispatch();
+
 
     const mycategoty = async () => {
         const url = APIurls.newspaper;
@@ -44,8 +45,22 @@ const News = () => {
         mycategoty();
     }, [])
 
+//   backhandler
+    useEffect(() => {
+        const backAction = () => {
+            dispatch(HOME_TAB_FLAG(true))
+          return true;
+        };
+    
+        const backHandler = BackHandler.addEventListener(
+          "hardwareBackPress",
+          backAction
+        );
+        return () => backHandler.remove();
+      }, []);
+
     const renderItem = ({ item }) => {
-        console.error("item", item)
+        console.log("item", item)
         const { title, description } = item
         return (
             <View style={{ padding: 25, backgroundColor: COLOR.primaryDark, marginTop: 5 }}>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { LogBox, ScrollView, ActivityIndicator, SafeAreaView, StyleSheet, Text, View, Image, Button, Dimensions, FlatList, TouchableOpacity, StatusBar } from 'react-native';
+import React, { useState,useEffect } from 'react'
+import { LogBox, ScrollView, ActivityIndicator, SafeAreaView, StyleSheet, Text, View, Image, Button, Dimensions, FlatList, TouchableOpacity, StatusBar,BackHandler,Alert } from 'react-native';
 // import {cityapi} from "../tempdata/TempData" ;
 import { SliderBox } from 'react-native-image-slider-box';
 import TextTicker from 'react-native-text-ticker';
@@ -12,11 +12,22 @@ import { CURRENT_CITY, SET_SERVICE_ID } from "../redux/Action";
 
 const windowWidth = Dimensions.get('window').width;
 // const windowHeight = Dimensions.get('window').height;
+
+const state = {
+    images: [
+        'https://source.unsplash.com/1024x768/?nature',
+        'https://source.unsplash.com/1024x768/?water',
+        'https://source.unsplash.com/1024x768/?girl',
+        'https://source.unsplash.com/1024x768/?tree', // Network image
+        // Local image
+    ],
+};
 const Home = ({ navigation }) => {
     const [allServiceList, setAllServiceList] = React.useState([]);
     const [allHeadlineText, setAllHeadlineText] = React.useState("ERROR: text not found fron server")
     const [timer, setTimer] = React.useState(3000)
     const [isLoading, setIsLoading] = useState(true)
+    const [posterImg, setPosterImg] = useState(state.images)
     //REDUX
     const myState = useSelector((state) => state.changeState);
     const dispatch = useDispatch();
@@ -35,43 +46,74 @@ const Home = ({ navigation }) => {
     const getText = async () => {
         const url = APIurls.headlineUrl
         console.log("Home---------headlineUrl-------", url)
-        
+
         try {
             const res = await axios.get(url);
-            
+
             const Headline = res.data.headline[0].text;
-            console.log("HEADLINE LOADED SUCCESSFULLY :)",Headline)
+            console.log("HEADLINE LOADED SUCCESSFULLY :)", Headline)
             setAllHeadlineText(Headline)
             const textlength = Headline.length
             setTimer(textlength * 100)
-            console.log("textlength is ",textlength, " and type of textlength", typeof(textlength))
+            console.log("textlength is ", textlength, " and type of textlength", typeof (textlength))
 
         } catch (error) {
-            console.log("ERROR WHEN LOADING HEADLINE ..........&& REASON",error)
+            console.log("ERROR WHEN LOADING HEADLINE ..........&& REASON", error)
+        }
+    }
+
+    const getPosterImg = async () => {
+        const PosterImageUrl = APIurls.posterImgUrl;
+        console.log(`home-----------url---------- ${PosterImageUrl}`);
+        console.log(`TRYING TO GET POSTER IMAGES ................`);
+        try {
+            const res = await axios.get(PosterImageUrl)
+            console.log(`POSTER IMAGES LOADED SUCCESSFULLY   :) `)
+            console.log(JSON.stringify(res.data.posters))
+            const imageArr = res.data.posters
+            let ImgUrl = []
+            for(let i=0; i<imageArr.length;i++){
+                ImgUrl =[...ImgUrl,imageArr[i].image]
+            }
+            //console.log('ImgUrl',ImgUrl)
+            setPosterImg(ImgUrl)
+           
+        } catch (error) {
+            console.log(`ERROR WHEN LOADING POSTER IMAGES  !!!  ERRORMSG : ${error} `)
         }
     }
 
     React.useEffect(() => {
         mycategoty();
         getText()
+        getPosterImg()
         LogBox.ignoreLogs(["VirtualizedLists should never be nested"])
     }, [])
 
+// backhandeler
+    const backAction = () => {
+        Alert.alert("Hold on!", "Are you sure you want to Exit App?", [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel"
+          },
+          { text: "YES", onPress: () => BackHandler.exitApp() }
+        ]);
+        return true;
+      };
+    
+      useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", backAction);
+    
+        return () =>
+          BackHandler.removeEventListener("hardwareBackPress", backAction);
+      }, []);
 
-    const state = {
-        images: [
-            'https://source.unsplash.com/1024x768/?nature',
-            'https://source.unsplash.com/1024x768/?water',
-            'https://source.unsplash.com/1024x768/?girl',
-            'https://source.unsplash.com/1024x768/?tree', // Network image
-            // Local image
-        ],
-    };
-
-    const getEmployee = (id) => {       
+    const getEmployee = (id,title) => {        
         dispatch(SET_SERVICE_ID(id))
-        if (myState.currnt_city_id.length != 0) {
-            navigation.navigate('EmployeeDetails')
+        if (myState.currnt_city_id.length != 0) {        
+            navigation.navigate('EmployeeDetails',{head:title})
         } else {
             alert("select city again")
         }
@@ -81,7 +123,7 @@ const Home = ({ navigation }) => {
         const { id, file, title } = item;
         return (
             <TouchableOpacity
-                onPress={() => getEmployee(id, navigation)}
+                onPress={() => getEmployee(id, title,navigation)}
                 style={{
                     backgroundColor: '#cfaca9',
                     margin: 5,
@@ -117,7 +159,7 @@ const Home = ({ navigation }) => {
                         dotStyle={{ width: 0 }}
                         autoplay={true}
                         circleLoop={true}
-                        images={state.images}
+                        images={posterImg}
                     />
                 </View>
                 {/*..marquee..text */}

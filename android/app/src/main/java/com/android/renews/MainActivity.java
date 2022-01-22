@@ -1,4 +1,4 @@
-package com.app;
+package com.android.renews;
 
 import com.facebook.react.ReactActivity;
 
@@ -12,7 +12,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "app";
+    return "REnews";
   }
   @Override
   protected void onCreate(Bundle savedInstanceState) {
