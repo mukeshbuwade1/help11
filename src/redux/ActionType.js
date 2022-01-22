@@ -8,6 +8,6 @@ export const city_array = "city_array";
 
 export const is_internet_active = "is_internet_active";
 
-// export const CURRENT_CITY = "CURRENT_CITY";
+export const active_tab = "active";
 
 // export const CURRENT_CITY = "CURRENT_CITY";

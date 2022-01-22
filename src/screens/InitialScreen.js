@@ -38,17 +38,46 @@ const InitialScreen = ({ navigation }) => {
         console.log("CITY LIST LOADING..........")
         try {
             const res = await axios.get(cityUrl)
-            // console.warn("---------city res-------", res)
-            if (res) {
+         console.warn("---------city res-------",JSON.stringify( res))
+            if (res?.data.result) {
+                const cityData = res.data.cities;
+                console.log("CITY LIST LOADED SUCCESSFULLY..........")
+                setAllCity(cityData)
+                dispatch(CITY_ARRAY(cityData))
                 setIsLoading(false)
             }
-            const cityData = res.data.cities;
-            console.log("CITY LIST LOADED SUCCESSFULLY..........")
-            setAllCity(cityData)
-            dispatch(CITY_ARRAY(cityData))
+            else{
+                Alert.alert(
+                    "Alert",
+                    "Something went wrong !!",
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                      },
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                  );
+                setIsLoading(false)  
+            }
+          
             getData()
 
         } catch (error) {
+            Alert.alert(
+                "Alert",
+                "Something went wrong !!",
+                [
+                  {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                  },
+                  { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+              );
+            setIsLoading(false)  
             console.log("ERROR WHEN LOADING CITY LIST ..........&& REASON", error)
 
         }

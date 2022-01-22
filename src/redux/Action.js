@@ -1,5 +1,5 @@
 // import {CURRENT_CITY, CURRENT_CITY_NAME, SET_SERVICE_ID, CITY_ARRAY, IS_INTERNET_ACTIVE} from "./ActionType";
-import {current_city_id,is_internet_active,current_city_name, set_service_id, city_array} from "./ActionType";
+import {current_city_id,is_internet_active,current_city_name, set_service_id, city_array,active_tab} from "./ActionType";
 
 export const CURRENT_CITY = (value) => {
     return (
@@ -24,5 +24,10 @@ export const CITY_ARRAY = (value) => {
 export const IS_INTERNET_ACTIVE = (value) => {
     return (
         { type: is_internet_active, payload: value , }
+    )
+}
+export const ACTIVE_TAB = (value) => {
+    return (
+        { type: active_tab, payload: value , }
     )
 }

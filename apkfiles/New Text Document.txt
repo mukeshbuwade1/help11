@@ -3,5 +3,7 @@ KeyStore ..........
 path----------------
 password : Pass@1210
 
+alise:key0
+
 key------------------------------------
 password : Pass@1210

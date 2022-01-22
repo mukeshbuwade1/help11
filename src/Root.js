@@ -21,7 +21,7 @@ import About from './screens/About';
 
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { CURRENT_CITY, CITY_ARRAY } from "./redux/Action";
+import { CURRENT_CITY, CITY_ARRAY,ACTIVE_TAB } from "./redux/Action";
 //API URL
 import { APIurls } from './constant/constant';
 import axios from 'axios';
@@ -40,8 +40,10 @@ const Root = ({ navigation }) => {
     console.log("*******redux data *******", myState)
     const StoredCity = myState.city_array
     console.warn("stored city", StoredCity)
+    const active = myState.active_tab;
+    console.error("active", active)
 
-    const [active, setactive] = useState("Home")
+    //const [active, setactive] = useState("Home")
     const [ShowMenu, setShowMenu] = useState(false)
     const [allCity, setAllCity] = useState(StoredCity);
     const [selectedCity, setSelectedCity] = useState(initialSelectedCity);
@@ -146,19 +148,20 @@ const Root = ({ navigation }) => {
             case "Home":
                 return <Home navigation={navigation} />;
             case "News":
-                return <News />
+                return <News navigation={navigation} />
             case "Video":
-                return <Video />
+                return <Video navigation={navigation} />
             case "AboutUs":
-                return <About />
+                return <About navigation={navigation} />
             default:
                 return <Home navigation={navigation} />
 
         }
     }
     const activewindowAndAnimation = (Title) => {
-        setactive(Title),
-            viewAnimation()
+        dispatch(ACTIVE_TAB(Title))
+        //setactive(Title),
+        viewAnimation()
     }
 
     const myTab = (Title, icon) => {
