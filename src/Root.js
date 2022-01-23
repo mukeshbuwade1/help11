@@ -63,7 +63,7 @@ const Root = ({ navigation }) => {
         try {
             const Value = await AsyncStorage.getItem('@storage_Key')
             if (Value !== null) {
-                console.error(" CITY VALUE FOUND IN AsyncStorage", Value)
+                console.log(" CITY VALUE FOUND IN AsyncStorage", Value)
 
                 //dispatch(CURRENT_CITY(Value))
                 setSelectedCity(Value)
@@ -104,7 +104,7 @@ const Root = ({ navigation }) => {
                         setSelectedCity(itemValue)
                         storeData(itemValue)
                     }}>
-                    {console.error("selectedCity", selectedCity)}
+                    {console.log("selectedCity", selectedCity)}
                     {
                         allCity.map(i => {
                             let { name, id } = i;
@@ -196,8 +196,9 @@ const Root = ({ navigation }) => {
                             {myTab("News", news)}
                             {myTab("News Paper", news)}
                             {myTab("Video", film)}
-                            {/* {myTab("AboutUs", information)}       */}
+                            {myTab("AboutUs", information)}      
                         </View>
+                        <Text style={{position:"absolute", bottom:30, left:40,fontSize:11}}> &copy; 2021 REnews18</Text>
                     </View>
                     <Animated.View style={{
                         flexGrow: 1,
