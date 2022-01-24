@@ -110,7 +110,7 @@ const About = () => {
               color:"#fff"
             }}>
             Address : Zone 1,MP nagar ,462021, Bhopal
-            
+            {"\n"}
             Website : renews18.com
           </Text>
 

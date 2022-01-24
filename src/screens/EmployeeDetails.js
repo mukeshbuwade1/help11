@@ -67,7 +67,7 @@ const backAction = () => {
                     alignItems: "center"
                 }}>
                 <Image source={boy} style={{ width: 65, height: 65 }} />
-                <View style={{ marginLeft: 15, }}>
+                <View style={{ marginLeft: 15,flex:1 }}>
                     <View>
                         <Text
                             style={{
